@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class USInteractionComponent;
 
 UCLASS()
 class LEARNUNREAL_API ASCharacter : public ACharacter
@@ -25,16 +26,23 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
+	
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditAnywhere)
+	USInteractionComponent* InteractionComp;
 
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
 
 	void PrimaryAttack();
+
+	void PrimaryInteract();
 
 public:	
 	// Called every frame
