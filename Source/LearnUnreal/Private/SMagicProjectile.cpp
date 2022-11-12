@@ -18,8 +18,7 @@ ASMagicProjectile::ASMagicProjectile()
 	// SphereComp->SetCollisionObjectType(ECC_WorldDynamic);
 	// SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	// SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-
-	// This profile was created in settings
+	// This profile was created in project settings
 	SphereComp->SetCollisionProfileName("Projectile");
 	RootComponent = SphereComp;
 
@@ -27,7 +26,7 @@ ASMagicProjectile::ASMagicProjectile()
 	EffectComp->SetupAttachment(SphereComp);
 
 	MovementComp = CreateAbstractDefaultSubobject<UProjectileMovementComponent>("MovementComp");
-	MovementComp->InitialSpeed = 1000.f;
+	MovementComp->InitialSpeed = 4000.f;
 	MovementComp->bRotationFollowsVelocity = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
 }

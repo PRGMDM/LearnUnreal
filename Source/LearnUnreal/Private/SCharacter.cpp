@@ -30,7 +30,6 @@ ASCharacter::ASCharacter()
 void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ASCharacter::MoveForward(float Value)
@@ -55,12 +54,35 @@ void ASCharacter::MoveRight(float Value)
 
 void ASCharacter::PrimaryAttack()
 {
+  PlayAnimMontage(AttackAnim);
+  GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f);
+  // GetWorldTimerManager().ClearTimer(handle) stops the timer from running when character dies etc.
+  // TODO: use animation notify is better, will get to this later.
+}
+
+void ASCharacter::PrimaryAttack_TimeElapsed()
+{
+  // The muzzle on the right hand
   FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-  FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
+  FVector Start = CameraComp->GetComponentLocation();
+  FVector End = Start + GetControlRotation().Vector() * 10000;
+  FCollisionObjectQueryParams ObjectQueryParams;
+  ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);  // TODO: think about what other types to add.
+  ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+
+  FHitResult Hit;
+  GetWorld()->LineTraceSingleByObjectType(Hit, Start, End, ObjectQueryParams);
+
+  FVector ProjectileDirection = Hit.GetActor()? Hit.ImpactPoint - HandLocation : End - HandLocation;
+
+  FTransform SpawnTM = FTransform(ProjectileDirection.Rotation(), HandLocation);
   FActorSpawnParameters SpawnParams;
   SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+  SpawnParams.Owner= this;
   GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }
+
+
 
 void ASCharacter::PrimaryInteract()
 {

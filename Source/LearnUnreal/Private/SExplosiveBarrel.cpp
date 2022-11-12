@@ -20,6 +20,7 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	ForceComp = CreateDefaultSubobject<URadialForceComponent>("ForceComp");
 	ForceComp->SetupAttachment(MeshComp);
 
+	ForceComp->SetAutoActivate(false);
 	ForceComp->Radius = 750.f;
 	ForceComp->ImpulseStrength = 1000.f;
 	ForceComp->bImpulseVelChange = true;
