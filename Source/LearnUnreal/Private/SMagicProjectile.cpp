@@ -21,7 +21,7 @@ ASMagicProjectile::ASMagicProjectile()
 	// SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	// This profile was created in project settings
 	SphereComp->SetCollisionProfileName("Projectile");
-	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap); // TODO: Maybe switched on hit as suggested by documentation
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap); // TODO: Maybe switch on hit as suggested by documentation
 	RootComponent = SphereComp;
 
 	EffectComp = CreateDefaultSubobject<UParticleSystemComponent>("EffectComp");
@@ -51,6 +51,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		if (AttributeComp)
 		{
 			AttributeComp->ApplyHealthChange(-20.f);
+			Destroy();
 		}
 	}
 }

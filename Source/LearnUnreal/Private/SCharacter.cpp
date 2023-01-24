@@ -36,6 +36,7 @@ void ASCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+
 void ASCharacter::MoveForward(float Value)
 {
   FRotator ControlRot = GetControlRotation();
