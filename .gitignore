@@ -76,3 +76,5 @@ DerivedDataCache/*
 Content/*
 
 .vsconfig
+
+clang-format

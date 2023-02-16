@@ -11,36 +11,34 @@ class UProjectileMovementComponent;
 class UParticleSystemComponent;
 
 UCLASS()
-class LEARNUNREAL_API ASMagicProjectile : public AActor
-{
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ASMagicProjectile();
+class LEARNUNREAL_API ASMagicProjectile : public AActor {
+    GENERATED_BODY()
+
+public:
+    // Sets default values for this actor's properties
+    ASMagicProjectile();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
-	USphereComponent* SphereComp;
+    UPROPERTY(VisibleAnywhere, BlueprintReadonly)
+    USphereComponent* SphereComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
-	UProjectileMovementComponent* MovementComp;
+    UPROPERTY(VisibleAnywhere, BlueprintReadonly)
+    UProjectileMovementComponent* MovementComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
-	UParticleSystemComponent* EffectComp;
+    UPROPERTY(VisibleAnywhere, BlueprintReadonly)
+    UParticleSystemComponent* EffectComp;
 
-	UFUNCTION()
-	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-											UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-			                const FHitResult& SweepResult);
+    UFUNCTION()
+    void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+        const FHitResult& SweepResult);
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+public:
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
 };
 
 // TODO: Maybe ditch the hit event and go for the overlap event and then decide what to do with the projectile.

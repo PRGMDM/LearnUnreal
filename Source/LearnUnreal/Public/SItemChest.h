@@ -10,31 +10,29 @@
 UStaticMeshComponent;
 
 UCLASS()
-class LEARNUNREAL_API ASItemChest : public AActor, public ISGameplayInterface
-{
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ASItemChest();
+class LEARNUNREAL_API ASItemChest : public AActor, public ISGameplayInterface {
+    GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
-	float TargetPitch;
+public:
+    // Sets default values for this actor's properties
+    ASItemChest();
 
-	void Interact_Implementation(APawn* InstigatorPawn);
+    UPROPERTY(EditAnywhere)
+    float TargetPitch;
+
+    void Interact_Implementation(APawn* InstigatorPawn);
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* BaseMesh;
+    UPROPERTY(VisibleAnywhere)
+    UStaticMeshComponent* BaseMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UStaticMeshComponent* LidMesh;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    UStaticMeshComponent* LidMesh;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+public:
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
 };

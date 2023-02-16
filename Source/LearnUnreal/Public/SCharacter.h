@@ -13,55 +13,70 @@ class UAnimMontage;
 class USAttributeComponent;
 
 UCLASS()
-class LEARNUNREAL_API ASCharacter : public ACharacter
-{
-	GENERATED_BODY()
+class LEARNUNREAL_API ASCharacter : public ACharacter {
+    GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	ASCharacter();
+    // Sets default values for this character's properties
+    ASCharacter();
 
 protected:
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    UPROPERTY(VisibleAnywhere)
+    USpringArmComponent* SpringArmComp;
 
-	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArmComp;
-	
-	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* CameraComp;
-	
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> ProjectileClass;
+    UPROPERTY(VisibleAnywhere)
+    UCameraComponent* CameraComp;
 
-	UPROPERTY(EditAnywhere)
-	USInteractionComponent* InteractionComp;
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<AActor> ProjectileClass;
 
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	UAnimMontage* AttackAnim;
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<AActor> DashProjectileClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USAttributeComponent* AttributeComp;
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<AActor> BlackHoleClass;
 
-	FTimerHandle TimerHandle_PrimaryAttack;
+    UPROPERTY(EditAnywhere)
+    USInteractionComponent* InteractionComp;
 
+    UPROPERTY(EditAnywhere, Category = "Attack")
+    UAnimMontage* AttackAnim;
 
-	void MoveForward(float Value);
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    USAttributeComponent* AttributeComp;
 
-	void MoveRight(float Value);
+    FTimerHandle TimerHandle_PrimaryAttack;
 
-	void PrimaryAttack();
+    FTimerHandle TimerHandle_BlackHoleAttack;
+    FTimerHandle TimerHandle_Dash;
 
-	void PrimaryAttack_TimeElapsed();
+    void MoveForward(float Value);
 
-	void PrimaryInteract();
+    void MoveRight(float Value);
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+    void PrimaryAttack();
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+    void PrimaryAttack_TimeElapsed();
 
+    void PrimaryInteract();
+
+    void BlackHoleAttack();
+
+    void BlackHoleAttack_TimeElapsed();
+
+    void Dash();
+
+    void Dash_TimeElapsed();
+
+    void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
+
+public:
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
+
+    // Called to bind functionality to input
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

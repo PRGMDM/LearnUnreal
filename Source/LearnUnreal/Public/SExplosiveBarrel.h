@@ -10,28 +10,27 @@ class UStaticMeshComponent;
 class URadialForceComponent;
 
 UCLASS()
-class LEARNUNREAL_API ASExplosiveBarrel : public AActor
-{
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ASExplosiveBarrel();
+class LEARNUNREAL_API ASExplosiveBarrel : public AActor {
+    GENERATED_BODY()
+
+public:
+    // Sets default values for this actor's properties
+    ASExplosiveBarrel();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* MeshComp;
+    UPROPERTY(VisibleAnywhere)
+    UStaticMeshComponent* MeshComp;
 
-	UPROPERTY(VisibleAnywhere)
-	URadialForceComponent* ForceComp;
+    UPROPERTY(VisibleAnywhere)
+    URadialForceComponent* ForceComp;
 
-	UFUNCTION()
-	void OnActorHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+    UFUNCTION()
+    void OnActorHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+public:
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
 };

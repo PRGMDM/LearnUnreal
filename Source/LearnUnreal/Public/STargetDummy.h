@@ -9,21 +9,20 @@
 class USAttributeComponent;
 
 UCLASS()
-class LEARNUNREAL_API ASTargetDummy : public AActor
-{
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	ASTargetDummy();
+class LEARNUNREAL_API ASTargetDummy : public AActor {
+    GENERATED_BODY()
+
+public:
+    // Sets default values for this actor's properties
+    ASTargetDummy();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
-	UStaticMeshComponent* MeshComp;
+    UPROPERTY(VisibleAnywhere, BlueprintReadonly)
+    UStaticMeshComponent* MeshComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
-	USAttributeComponent* AttributeComp;
+    UPROPERTY(VisibleAnywhere, BlueprintReadonly)
+    USAttributeComponent* AttributeComp;
 
-	UFUNCTION()
-	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+    UFUNCTION()
+    void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
 };
