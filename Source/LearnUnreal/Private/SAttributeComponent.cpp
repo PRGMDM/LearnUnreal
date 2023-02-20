@@ -5,13 +5,15 @@
 // Sets default values for this component's properties
 USAttributeComponent::USAttributeComponent()
 {
-    Health = 100;
+    HealthMax = 100;
+    Health = HealthMax;
 }
 
 bool USAttributeComponent::ApplyHealthChange(float Delta)
 {
     Health += Delta;
     OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
+    // TODO: Don't allow healing beyond healthmax
     return true;
 }
 

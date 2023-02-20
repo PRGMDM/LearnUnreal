@@ -77,4 +77,4 @@ Content/*
 
 .vsconfig
 
-clang-format
+.clang-format
