@@ -3,7 +3,6 @@
 #include "SCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "DrawDebugHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "SAttributeComponent.h"
@@ -115,7 +114,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
         Params.AddIgnoredActor(this);
 
         FCollisionObjectQueryParams ObjParams;
-        ObjParams.AddObjectTypesToQuery(ECC_WorldStatic); // TODO: When look ahead, the camera could be in the hitbox of landscape, what to do?
+        ObjParams.AddObjectTypesToQuery(ECC_WorldStatic); // TODO: When look above, the camera could be in the hitbox of landscape, what to do?
         ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
         ObjParams.AddObjectTypesToQuery(ECC_Pawn);
 
