@@ -8,8 +8,8 @@ void ASAIController::BeginPlay()
 {
     Super::BeginPlay();
     RunBehaviorTree(BehaviorTree);
-    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
-    if (PlayerPawn) {
-        GetBlackboardComponent()->SetValueAsObject("TargetActor", PlayerPawn);
-    }
+    /* APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+     if (PlayerPawn) {
+         GetBlackboardComponent()->SetValueAsObject("TargetActor", PlayerPawn);
+     }*/
 }

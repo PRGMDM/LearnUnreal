@@ -24,6 +24,8 @@ void USBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
                     BlackboardComp->SetValueAsBool(AttackRangeKey.SelectedKeyName, bWithinRange && bHasLOS);
                 }
             }
+        } else {
+            UE_LOG(LogTemp, Warning, TEXT("No target"));
         }
     }
 }
