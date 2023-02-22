@@ -18,7 +18,7 @@ ASProjectileBase::ASProjectileBase()
     EffectComp = CreateDefaultSubobject<UParticleSystemComponent>("EffectComp");
     EffectComp->SetupAttachment(RootComponent);
 
-    MoveComp = CreateAbstractDefaultSubobject<UProjectileMovementComponent>("MoveComp");
+    MoveComp = CreateDefaultSubobject<UProjectileMovementComponent>("MoveComp");
     MoveComp->InitialSpeed = 4000.f;
     MoveComp->ProjectileGravityScale = 0.f;
     MoveComp->bRotationFollowsVelocity = true;
@@ -30,12 +30,13 @@ ASProjectileBase::ASProjectileBase()
 
 void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+    UE_LOG(LogTemp, Warning, TEXT("%s"), *(OtherComp->GetReadableName()));
     Explode();
 }
 
 void ASProjectileBase::Explode_Implementation()
 {
-    if (ensure(!IsPendingKill())) {
+    if (ensure(IsValidChecked(this))) {
         UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, GetActorLocation(), GetActorRotation());
         UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
         Destroy();
