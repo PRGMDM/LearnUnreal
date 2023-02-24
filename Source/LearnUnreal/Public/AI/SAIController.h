@@ -9,7 +9,8 @@
 class UBehaviorTree;
 
 UCLASS()
-class LEARNUNREAL_API ASAIController : public AAIController {
+class LEARNUNREAL_API ASAIController : public AAIController
+{
     GENERATED_BODY()
 
 protected:

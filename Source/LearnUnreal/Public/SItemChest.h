@@ -10,7 +10,8 @@
 UStaticMeshComponent;
 
 UCLASS()
-class LEARNUNREAL_API ASItemChest : public AActor, public ISGameplayInterface {
+class LEARNUNREAL_API ASItemChest : public AActor, public ISGameplayInterface
+{
     GENERATED_BODY()
 
 public:

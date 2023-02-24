@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 
@@ -27,6 +28,8 @@ ASCharacter::ASCharacter()
 
     GetCharacterMovement()->bOrientRotationToMovement = true;
     bUseControllerRotationYaw = false;
+
+    HandSocketName = "Muzzle_01";
 }
 
 void ASCharacter::PostInitializeComponents()
@@ -61,9 +64,15 @@ void ASCharacter::MoveRight(float Value)
     AddMovementInput(RightVector, Value);
 }
 
-void ASCharacter::PrimaryAttack()
+void ASCharacter::PlayAttackEffects()
 {
     PlayAnimMontage(AttackAnim);
+    UGameplayStatics::SpawnEmitterAttached(AttackVFX, GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
+}
+
+void ASCharacter::PrimaryAttack()
+{
+    PlayAttackEffects();
     GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f);
     // GetWorldTimerManager().ClearTimer(handle) stops the timer from running when character dies etc.
     // TODO: use animation notify is better, will get to this later.
@@ -76,7 +85,8 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 
 void ASCharacter::BlackHoleAttack()
 {
-    PlayAnimMontage(AttackAnim);
+    PlayAttackEffects();
+
     GetWorldTimerManager().SetTimer(TimerHandle_BlackHoleAttack, this, &ASCharacter::BlackHoleAttack_TimeElapsed, 0.2f);
 }
 
@@ -87,7 +97,8 @@ void ASCharacter::BlackHoleAttack_TimeElapsed()
 
 void ASCharacter::Dash()
 {
-    PlayAnimMontage(AttackAnim);
+    PlayAttackEffects();
+
     GetWorldTimerManager().SetTimer(TimerHandle_Dash, this, &ASCharacter::Dash_TimeElapsed, 0.2f);
 }
 
@@ -103,9 +114,10 @@ void ASCharacter::PrimaryInteract()
 
 void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 {
-    if (ensureAlways(ClassToSpawn)) {
+    if (ensureAlways(ClassToSpawn))
+    {
         // The muzzle on the right hand of Gideon.
-        FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+        FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
 
         FCollisionShape Shape;
         Shape.SetSphere(20.f);
@@ -122,7 +134,8 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
         FVector End = Start + GetControlRotation().Vector() * 10000;
 
         FHitResult Hit;
-        if (GetWorld()->SweepSingleByObjectType(Hit, Start, End, FQuat::Identity, ObjParams, Shape, Params)) {
+        if (GetWorld()->SweepSingleByObjectType(Hit, Start, End, FQuat::Identity, ObjParams, Shape, Params))
+        {
             End = Hit.ImpactPoint;
         }
 
@@ -138,9 +151,11 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
-    if (Delta < 0) {
+    if (Delta < 0)
+    {
         GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
-        if (NewHealth <= 0) {
+        if (NewHealth <= 0)
+        {
             APlayerController* PC = Cast<APlayerController>(GetController());
             DisableInput(PC);
         }

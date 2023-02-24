@@ -11,9 +11,11 @@ class USpringArmComponent;
 class USInteractionComponent;
 class UAnimMontage;
 class USAttributeComponent;
+class UParticleSystem;
 
 UCLASS()
-class LEARNUNREAL_API ASCharacter : public ACharacter {
+class LEARNUNREAL_API ASCharacter : public ACharacter
+{
     GENERATED_BODY()
 
 public:
@@ -45,11 +47,16 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Attack")
     UAnimMontage* AttackAnim;
 
+    UPROPERTY(EditAnywhere, Category = "Effects")
+    UParticleSystem* AttackVFX;
+
+    UPROPERTY(VisibleAnywhere, Category = "Effects")
+    FName HandSocketName;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USAttributeComponent* AttributeComp;
 
     FTimerHandle TimerHandle_PrimaryAttack;
-
     FTimerHandle TimerHandle_BlackHoleAttack;
     FTimerHandle TimerHandle_Dash;
 
@@ -72,6 +79,8 @@ protected:
     void Dash_TimeElapsed();
 
     void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
+
+    void PlayAttackEffects();
 
     UFUNCTION()
     void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);

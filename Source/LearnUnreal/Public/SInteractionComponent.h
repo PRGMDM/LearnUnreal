@@ -7,7 +7,8 @@
 #include "SInteractionComponent.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class LEARNUNREAL_API USInteractionComponent : public UActorComponent {
+class LEARNUNREAL_API USInteractionComponent : public UActorComponent
+{
     GENERATED_BODY()
 
 public:

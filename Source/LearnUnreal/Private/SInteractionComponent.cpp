@@ -36,10 +36,13 @@ void USInteractionComponent::PrimaryInteract()
     Shape.SetSphere(30.f);
     GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams, Shape);
 
-    for (auto Hit : Hits) {
+    for (auto Hit : Hits)
+    {
         AActor* HitActor = Hit.GetActor();
-        if (HitActor) {
-            if (HitActor->Implements<USGameplayInterface>()) {
+        if (HitActor)
+        {
+            if (HitActor->Implements<USGameplayInterface>())
+            {
                 UE_LOG(LogTemp, Warning, TEXT("Interact line trace hit an actor %s, invoking Interact on the actor"), *HitActor->GetName());
                 ISGameplayInterface::Execute_Interact(HitActor, Cast<APawn>(MyOwner));
                 DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 30.f, 32, FColor::Red, false, 2.0f);

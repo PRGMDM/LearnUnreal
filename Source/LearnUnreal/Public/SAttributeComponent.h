@@ -9,7 +9,8 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, USAttributeComponent*, OwningComp, float, NewHealth, float, Delta);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class LEARNUNREAL_API USAttributeComponent : public UActorComponent {
+class LEARNUNREAL_API USAttributeComponent : public UActorComponent
+{
     GENERATED_BODY()
 
 public:
@@ -32,4 +33,10 @@ public:
 
     UFUNCTION(BlueprintCallable)
     bool IsAlive() const;
+
+    UFUNCTION(BlueprintCallable)
+    bool IsFullHealth() const;
+
+    UFUNCTION(BlueprintCallable)
+    float GetHealthMax() const;
 };

@@ -8,23 +8,30 @@ void USBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
 {
     Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
     UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
-    if (ensure(BlackboardComp)) {
+    if (ensure(BlackboardComp))
+    {
         AActor* TargetActor = Cast<AActor>(BlackboardComp->GetValueAsObject("TargetActor"));
-        if (TargetActor) {
+        if (TargetActor)
+        {
             AAIController* MyController = OwnerComp.GetAIOwner();
-            if (ensure(MyController)) {
+            if (ensure(MyController))
+            {
                 APawn* AIPawn = MyController->GetPawn();
-                if (ensure(AIPawn)) {
+                if (ensure(AIPawn))
+                {
                     float Distance = FVector::Distance(TargetActor->GetActorLocation(), AIPawn->GetActorLocation());
                     bool bWithinRange = Distance < 2000.f;
                     bool bHasLOS = false;
-                    if (bWithinRange) {
+                    if (bWithinRange)
+                    {
                         bHasLOS = MyController->LineOfSightTo(TargetActor);
                     }
                     BlackboardComp->SetValueAsBool(AttackRangeKey.SelectedKeyName, bWithinRange && bHasLOS);
                 }
             }
-        } else {
+        }
+        else
+        {
             UE_LOG(LogTemp, Warning, TEXT("No target"));
         }
     }

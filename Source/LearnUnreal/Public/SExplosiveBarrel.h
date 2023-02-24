@@ -10,7 +10,8 @@ class UStaticMeshComponent;
 class URadialForceComponent;
 
 UCLASS()
-class LEARNUNREAL_API ASExplosiveBarrel : public AActor {
+class LEARNUNREAL_API ASExplosiveBarrel : public AActor
+{
     GENERATED_BODY()
 
 public:

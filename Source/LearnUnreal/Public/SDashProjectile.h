@@ -10,7 +10,8 @@
  *
  */
 UCLASS()
-class LEARNUNREAL_API ASDashProjectile : public ASProjectileBase {
+class LEARNUNREAL_API ASDashProjectile : public ASProjectileBase
+{
     GENERATED_BODY()
 
 protected:

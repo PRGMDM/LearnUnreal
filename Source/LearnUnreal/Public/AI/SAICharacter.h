@@ -9,7 +9,8 @@
 class UPawnSensingComponent;
 
 UCLASS()
-class LEARNUNREAL_API ASAICharacter : public ACharacter {
+class LEARNUNREAL_API ASAICharacter : public ACharacter
+{
     GENERATED_BODY()
 
 public:

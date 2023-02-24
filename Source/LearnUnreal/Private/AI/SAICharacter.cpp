@@ -9,6 +9,7 @@
 ASAICharacter::ASAICharacter()
 {
     PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
+    AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void ASAICharacter::PostInitializeComponents()
@@ -20,7 +21,8 @@ void ASAICharacter::PostInitializeComponents()
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
     AAIController* AIC = Cast<AAIController>(GetController());
-    if (AIC) {
+    if (AIC)
+    {
         UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
         BBComp->SetValueAsObject("TargetActor", Pawn); // TODO: Make this like AttackRangeKey in SBTService_CheckAttackRange.
     }

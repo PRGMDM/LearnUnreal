@@ -9,7 +9,8 @@
 class USAttributeComponent;
 
 UCLASS()
-class LEARNUNREAL_API ASTargetDummy : public AActor {
+class LEARNUNREAL_API ASTargetDummy : public AActor
+{
     GENERATED_BODY()
 
 public:

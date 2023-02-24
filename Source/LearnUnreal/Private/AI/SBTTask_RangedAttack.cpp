@@ -8,14 +8,17 @@
 EBTNodeResult::Type USBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     AAIController* MyController = OwnerComp.GetAIOwner();
-    if (ensure(MyController)) {
+    if (ensure(MyController))
+    {
         ACharacter* MyPawn = Cast<ACharacter>(MyController->GetPawn());
-        if (!MyPawn) {
+        if (!MyPawn)
+        {
             return EBTNodeResult::Failed;
         }
         FVector MuzzleLocation = MyPawn->GetMesh()->GetSocketLocation("Muzzle_01");
         AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("TargetActor"));
-        if (!TargetActor) {
+        if (!TargetActor)
+        {
             return EBTNodeResult::Failed;
         }
         FVector Direction = TargetActor->GetActorLocation() - MuzzleLocation;

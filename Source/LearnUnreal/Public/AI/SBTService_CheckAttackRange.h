@@ -10,7 +10,8 @@
  *
  */
 UCLASS()
-class LEARNUNREAL_API USBTService_CheckAttackRange : public UBTService {
+class LEARNUNREAL_API USBTService_CheckAttackRange : public UBTService
+{
     GENERATED_BODY()
 
 protected:

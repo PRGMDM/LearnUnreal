@@ -12,7 +12,8 @@ class UParticleSystemComponent;
 class UAudioComponent;
 
 UCLASS(ABSTRACT)
-class LEARNUNREAL_API ASProjectileBase : public AActor {
+class LEARNUNREAL_API ASProjectileBase : public AActor
+{
     GENERATED_BODY()
 
 public:

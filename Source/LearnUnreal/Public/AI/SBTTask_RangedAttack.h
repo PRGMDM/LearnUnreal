@@ -7,7 +7,8 @@
 #include "SBTTask_RangedAttack.generated.h"
 
 UCLASS()
-class LEARNUNREAL_API USBTTask_RangedAttack : public UBTTaskNode {
+class LEARNUNREAL_API USBTTask_RangedAttack : public UBTTaskNode
+{
     GENERATED_BODY()
     virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 

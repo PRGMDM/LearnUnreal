@@ -8,10 +8,14 @@
 #include "SMagicProjectile.generated.h"
 
 UCLASS()
-class LEARNUNREAL_API ASMagicProjectile : public ASProjectileBase {
+class LEARNUNREAL_API ASMagicProjectile : public ASProjectileBase
+{
     GENERATED_BODY()
 
 protected:
+    UPROPERTY(EditAnywhere, Category = "Effect")
+    TSubclassOf<UCameraShakeBase> ShakeEffect;
+
     virtual void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
         UPrimitiveComponent* OtherComp, FVector NormalImpulse,
         const FHitResult& Hit) override;

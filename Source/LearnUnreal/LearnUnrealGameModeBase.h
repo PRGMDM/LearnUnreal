@@ -7,11 +7,10 @@
 #include "LearnUnrealGameModeBase.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class LEARNUNREAL_API ALearnUnrealGameModeBase : public AGameModeBase
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
 };
