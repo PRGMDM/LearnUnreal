@@ -31,3 +31,8 @@ float USAttributeComponent::GetHealthMax() const
 {
     return HealthMax;
 }
+
+bool USAttributeComponent::IsLowHealth() const
+{
+    return Health <= 0.2f * HealthMax;
+}

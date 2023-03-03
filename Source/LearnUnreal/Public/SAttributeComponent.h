@@ -39,4 +39,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     float GetHealthMax() const;
+
+    UFUNCTION(BlueprintCallable)
+    bool IsLowHealth() const;
 };
