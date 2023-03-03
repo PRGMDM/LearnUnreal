@@ -7,6 +7,7 @@
 void USBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
     Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+
     UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
     if (ensure(BlackboardComp))
     {
@@ -30,9 +31,9 @@ void USBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
                 }
             }
         }
-        else
+        /*else
         {
             UE_LOG(LogTemp, Warning, TEXT("No target"));
-        }
+        }*/
     }
 }

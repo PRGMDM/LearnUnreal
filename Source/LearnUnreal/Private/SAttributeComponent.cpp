@@ -9,12 +9,13 @@ USAttributeComponent::USAttributeComponent()
     Health = HealthMax;
 }
 
-bool USAttributeComponent::ApplyHealthChange(float Delta)
+bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
-    Health += Delta;
-    Health = Health > HealthMax ? HealthMax : Health;
-    OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
-    return true;
+    float OldHealth = Health;
+    Health = FMath::Clamp(Health + Delta, 0.f, HealthMax);
+    float ActualDelta = Health - OldHealth;
+    OnHealthChanged.Broadcast(InstigatorActor, this, Health, ActualDelta);
+    return ActualDelta != 0;
 }
 
 bool USAttributeComponent::IsAlive() const

@@ -13,12 +13,13 @@ void USBTService_CheckLowHealth::TickNode(UBehaviorTreeComponent& OwnerComp, uin
     if (ensure(MyController) && ensure(BBComp))
     {
         APawn* AIPawn = MyController->GetPawn();
+        ensure(AIPawn);
         USAttributeComponent* AttrComp = Cast<USAttributeComponent>(AIPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
         if (ensure(AttrComp))
         {
             bool bIsLowHealth = AttrComp->IsLowHealth();
             BBComp->SetValueAsBool(LowHealthKey.SelectedKeyName, bIsLowHealth);
-            UE_LOG(LogTemp, Log, TEXT("Is low health: %s"), bIsLowHealth ? TEXT("true") : TEXT("false"));
+            // UE_LOG(LogTemp, Log, TEXT("Is low health: %s"), bIsLowHealth ? TEXT("true") : TEXT("false"));
         }
     }
 }

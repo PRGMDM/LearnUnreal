@@ -5,6 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "SAttributeComponent.h"
 
 ASGameModeBase::ASGameModeBase()
 {
@@ -19,10 +20,32 @@ void ASGameModeBase::StartPlay()
 
 void ASGameModeBase::SpawnBotTimerElapsed()
 {
-    UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
-    if (QueryInstance)
+    int32 AliveBotsCount = 0;
+    for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
     {
-        QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnQueryComplete);
+        ASAICharacter* Bot = *It;
+        USAttributeComponent* AttrComp = Cast<USAttributeComponent>(Bot->GetComponentByClass(USAttributeComponent::StaticClass()));
+        if (AttrComp && AttrComp->IsAlive())
+        {
+            AliveBotsCount++;
+        }
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("Alive bots: %d"), AliveBotsCount);
+
+    float MaxBotsCount = 5;
+    if (ensure(DifficultyCurve))
+    {
+        MaxBotsCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
+    }
+
+    if (AliveBotsCount < MaxBotsCount)
+    {
+        UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
+        if (QueryInstance)
+        {
+            QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnQueryComplete);
+        }
     }
 }
 
@@ -30,24 +53,8 @@ void ASGameModeBase::OnQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryIns
 {
     if (QueryStatus == EEnvQueryStatus::Success)
     {
-        int32 AliveBotsCount = 0;
-        for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
-        {
-            ASAICharacter* Bot = *It;
-            if (Bot)
-            {
-                AliveBotsCount++;
-            }
-        }
-
-        float MaxBotsCount = 5;
-        if (ensure(DifficultyCurve))
-        {
-            MaxBotsCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
-        }
-
         TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
-        if (Locations.Num() > 0 && AliveBotsCount <= MaxBotsCount)
+        if (Locations.Num() > 0)
         {
             DrawDebugSphere(GetWorld(), Locations[0], 100, 10, FColor::Black, true, 10, 0, 5);
             // FActorSpawnParameters Params;

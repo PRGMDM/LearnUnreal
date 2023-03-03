@@ -12,7 +12,7 @@ void ASMagicProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Ot
         USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
         if (AttributeComp)
         {
-            AttributeComp->ApplyHealthChange(-20.f);
+            AttributeComp->ApplyHealthChange(GetInstigator(), -20.f);
         }
     }
     // TODO: Do I put this in else?
