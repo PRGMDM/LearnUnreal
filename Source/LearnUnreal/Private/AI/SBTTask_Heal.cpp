@@ -10,7 +10,7 @@ EBTNodeResult::Type USBTTask_Heal::ExecuteTask(UBehaviorTreeComponent& OwnerComp
     if (ensure(MyController))
     {
         APawn* AIPawn = MyController->GetPawn();
-        USAttributeComponent* AttrComp = Cast<USAttributeComponent>(AIPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
+        USAttributeComponent* AttrComp = USAttributeComponent::GetAttributes(AIPawn);
         if (ensure(AttrComp))
         {
             return AttrComp->ApplyHealthChange(AIPawn, AttrComp->GetHealthMax()) ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;

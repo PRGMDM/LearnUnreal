@@ -4,6 +4,12 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
+#include "SAttributeComponent.h"
+
+USBTTask_RangedAttack::USBTTask_RangedAttack()
+{
+    MaxBulletSpread = 2.f;
+}
 
 EBTNodeResult::Type USBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -17,17 +23,22 @@ EBTNodeResult::Type USBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
         }
         FVector MuzzleLocation = MyPawn->GetMesh()->GetSocketLocation("Muzzle_01");
         AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("TargetActor"));
-        if (!TargetActor)
+        if (!TargetActor || !USAttributeComponent::IsActorAlive(TargetActor))
         {
             return EBTNodeResult::Failed;
         }
+
         FVector Direction = TargetActor->GetActorLocation() - MuzzleLocation;
         FRotator MuzzleRotation = Direction.Rotation();
+
+        MuzzleRotation.Pitch += FMath::FRandRange(-MaxBulletSpread, MaxBulletSpread);
+        MuzzleRotation.Yaw += FMath::FRandRange(-MaxBulletSpread, MaxBulletSpread);
+
         FActorSpawnParameters Params;
         Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
         Params.Instigator = MyPawn;
         AActor* Projectile = GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, Params);
-        if (Projectile) MyPawn->GetMesh()->IgnoreActorWhenMoving(Projectile, true);
+        if (Projectile) MyPawn->GetMesh()->IgnoreActorWhenMoving(Projectile, true); // TODO: Can I fix this by fixing channel?
         return Projectile ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
     }
     return EBTNodeResult::Failed;

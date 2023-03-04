@@ -9,7 +9,7 @@ void ASMagicProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* Ot
     if (OtherActor)
     {
         UGameplayStatics::PlayWorldCameraShake(this, ShakeEffect, Hit.Location, 0, 1000);
-        USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+        USAttributeComponent* AttributeComp = USAttributeComponent::GetAttributes(OtherActor);
         if (AttributeComp)
         {
             AttributeComp->ApplyHealthChange(GetInstigator(), -20.f);

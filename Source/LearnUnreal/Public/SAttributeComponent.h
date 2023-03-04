@@ -17,14 +17,6 @@ public:
     // Sets default values for this component's properties
     USAttributeComponent();
 
-protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
-    float Health;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
-    float HealthMax;
-
-public:
     UPROPERTY(BlueprintAssignable)
     FOnHealthChanged OnHealthChanged;
 
@@ -42,4 +34,17 @@ public:
 
     UFUNCTION(BlueprintCallable)
     bool IsLowHealth() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Attributes")
+    static USAttributeComponent* GetAttributes(AActor* Actor);
+
+    UFUNCTION(BlueprintCallable, Category = "Attributes", meta = (DisplayName = "IsAlive"))
+    static bool IsActorAlive(AActor* Actor);
+
+protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+    float Health;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+    float HealthMax;
 };

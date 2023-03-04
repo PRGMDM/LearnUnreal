@@ -14,7 +14,7 @@ void USBTService_CheckLowHealth::TickNode(UBehaviorTreeComponent& OwnerComp, uin
     {
         APawn* AIPawn = MyController->GetPawn();
         ensure(AIPawn);
-        USAttributeComponent* AttrComp = Cast<USAttributeComponent>(AIPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
+        USAttributeComponent* AttrComp = USAttributeComponent::GetAttributes(AIPawn);
         if (ensure(AttrComp))
         {
             bool bIsLowHealth = AttrComp->IsLowHealth();

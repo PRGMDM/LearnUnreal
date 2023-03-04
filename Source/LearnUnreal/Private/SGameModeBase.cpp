@@ -24,8 +24,7 @@ void ASGameModeBase::SpawnBotTimerElapsed()
     for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
     {
         ASAICharacter* Bot = *It;
-        USAttributeComponent* AttrComp = Cast<USAttributeComponent>(Bot->GetComponentByClass(USAttributeComponent::StaticClass()));
-        if (AttrComp && AttrComp->IsAlive())
+        if (Bot && USAttributeComponent::IsActorAlive(Bot))
         {
             AliveBotsCount++;
         }

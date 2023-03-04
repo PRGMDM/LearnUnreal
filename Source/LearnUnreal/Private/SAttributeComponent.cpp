@@ -37,3 +37,23 @@ bool USAttributeComponent::IsLowHealth() const
 {
     return Health <= 0.2f * HealthMax;
 }
+
+USAttributeComponent* USAttributeComponent::GetAttributes(AActor* Actor)
+{
+    if (Actor)
+    {
+        return Cast<USAttributeComponent>(Actor->GetComponentByClass(StaticClass()));
+    }
+    return nullptr;
+}
+
+bool USAttributeComponent::IsActorAlive(AActor* Actor)
+{
+    USAttributeComponent* AttrComp = GetAttributes(Actor);
+    if (ensure(AttrComp))
+    {
+        return AttrComp->IsAlive();
+    }
+    UE_LOG(LogTemp, Error, TEXT("Actor has no AttributeComponent."));
+    return false;
+}
