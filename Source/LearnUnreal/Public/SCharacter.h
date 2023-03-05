@@ -12,6 +12,8 @@ class USInteractionComponent;
 class UAnimMontage;
 class USAttributeComponent;
 class UParticleSystem;
+class UInputAction;
+class UInputMappingContext;
 
 UCLASS()
 class LEARNUNREAL_API ASCharacter : public ACharacter
@@ -56,13 +58,39 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USAttributeComponent* AttributeComp;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputMappingContext* InputMapping;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputAction* MoveAction;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputAction* LookAction;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputAction* JumpAction;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputAction* PrimaryAttackAction;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputAction* SecondaryAttackAction;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputAction* InteractAction;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputAction* DashAction;
+
     FTimerHandle TimerHandle_PrimaryAttack;
     FTimerHandle TimerHandle_BlackHoleAttack;
     FTimerHandle TimerHandle_Dash;
 
-    void MoveForward(float Value);
+    UFUNCTION()
+    void Move(const FInputActionInstance& Instance);
 
-    void MoveRight(float Value);
+    UFUNCTION()
+    void Look(const FInputActionInstance& Instance);
 
     void PrimaryAttack();
 
