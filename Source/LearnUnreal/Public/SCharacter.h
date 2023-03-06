@@ -24,6 +24,9 @@ public:
     // Sets default values for this character's properties
     ASCharacter();
 
+    UFUNCTION(Exec)
+    void HealSelf(float Amount = 100.f);
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;

@@ -34,6 +34,11 @@ ASCharacter::ASCharacter()
     HandSocketName = "Muzzle_01";
 }
 
+void ASCharacter::HealSelf(float Amount /* = 100.f */)
+{
+    AttributeComp->ApplyHealthChange(this, Amount);
+}
+
 void ASCharacter::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
@@ -137,7 +142,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
         Params.AddIgnoredActor(this);
 
         FCollisionObjectQueryParams ObjParams;
-        ObjParams.AddObjectTypesToQuery(ECC_WorldStatic); // TODO: When look above, the camera could be in the hitbox of landscape, what to do?
+        ObjParams.AddObjectTypesToQuery(ECC_WorldStatic); // TODO: When look above, the camera could be in the hitbox of landscape, what to do? make the trace start further away.
         ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
         ObjParams.AddObjectTypesToQuery(ECC_Pawn);
 

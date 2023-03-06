@@ -3,9 +3,11 @@
 #include "AI/SAICharacter.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "BrainComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "SAttributeComponent.h"
+#include "SWorldUserWidget.h"
 
 // Sets default values
 ASAICharacter::ASAICharacter()
@@ -49,6 +51,17 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
         {
             UE_LOG(LogTemp, Log, TEXT("Target set"));
             SetTargetActor(InstigatorActor);
+        }
+
+        if (!ActiveHealthBar)
+        {
+            ActiveHealthBar = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
+        }
+
+        if (ActiveHealthBar)
+        {
+            ActiveHealthBar->AttachedActor = this;
+            ActiveHealthBar->AddToViewport();
         }
 
         GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
