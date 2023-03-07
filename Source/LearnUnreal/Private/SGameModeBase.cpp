@@ -6,6 +6,9 @@
 #include "EngineUtils.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "SAttributeComponent.h"
+#include "SCharacter.h"
+
+static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("SpawnBots"), true, TEXT("Enable/disable bots spawning"), ECVF_Cheat);
 
 ASGameModeBase::ASGameModeBase()
 {
@@ -30,8 +33,28 @@ void ASGameModeBase::KillAll()
     }
 }
 
+void ASGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
+{
+    ASCharacter* Player = Cast<ASCharacter>(Victim);
+    if (Player)
+    {
+        FTimerHandle TimerHandle_RespawnDelay;
+        FTimerDelegate Delegate;
+        Delegate.BindUFunction(this, "RespawnPlayerElapsed", Player->GetController());
+        float RespawnDelay = 2.f;
+        GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
+    }
+    UE_LOG(LogTemp, Log, TEXT("OnActorKilled: victim: %s, killer: %s"), *GetNameSafe(Victim), *GetNameSafe(Killer));
+}
+
 void ASGameModeBase::SpawnBotTimerElapsed()
 {
+    if (!CVarSpawnBots.GetValueOnGameThread())
+    {
+        UE_LOG(LogTemp, Log, TEXT("Stopped bots spawning."));
+        return;
+    }
+
     int32 AliveBotsCount = 0;
     for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
     {
@@ -77,5 +100,14 @@ void ASGameModeBase::OnQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryIns
     {
         UE_LOG(LogTemp, Warning, TEXT("Failed to spawn bots."));
         return;
+    }
+}
+
+void ASGameModeBase::RespawnPlayerElapsed(AController* Controller)
+{
+    if (ensure(Controller))
+    {
+        Controller->UnPossess();
+        RestartPlayer(Controller);
     }
 }

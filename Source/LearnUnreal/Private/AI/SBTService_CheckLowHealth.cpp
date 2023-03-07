@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "SBTService_CheckLowHealth.h"
+#include "AI/SBTService_CheckLowHealth.h"
 #include "AI/SAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "SAttributeComponent.h"

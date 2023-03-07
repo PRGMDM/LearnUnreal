@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "SActionComponent.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 
@@ -28,6 +29,8 @@ ASCharacter::ASCharacter()
 
     AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComponent");
 
+    ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComponent");
+
     GetCharacterMovement()->bOrientRotationToMovement = true;
     bUseControllerRotationYaw = false;
 
@@ -43,6 +46,11 @@ void ASCharacter::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
     AttributeComp->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
+}
+
+FVector ASCharacter::GetPawnViewLocation() const
+{
+    return CameraComp->GetComponentLocation();
 }
 
 // Called when the game starts or when spawned
@@ -78,6 +86,19 @@ void ASCharacter::Look(const FInputActionInstance& Instance)
 {
     AddControllerYawInput(Instance.GetValue().Get<FVector2D>()[0]);
     AddControllerPitchInput(-Instance.GetValue().Get<FVector2D>()[1]);
+}
+
+void ASCharacter::SprintStart()
+{
+    UE_LOG(LogTemp, Log, TEXT("Sprinting started"));
+    ActionComp->StartActionByName(this, "Sprint");
+}
+
+void ASCharacter::SprintStop()
+{
+    UE_LOG(LogTemp, Log, TEXT("Sprinting stoped"));
+
+    ActionComp->StopActionByName(this, "Sprint");
 }
 
 void ASCharacter::PlayAttackEffects()
@@ -197,4 +218,6 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
     Input->BindAction(SecondaryAttackAction, ETriggerEvent::Triggered, this, &ASCharacter::BlackHoleAttack);
     Input->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ASCharacter::PrimaryInteract);
     Input->BindAction(DashAction, ETriggerEvent::Triggered, this, &ASCharacter::Dash);
+    Input->BindAction(SprintAction, ETriggerEvent::Started, this, &ASCharacter::SprintStart);
+    Input->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASCharacter::SprintStop);
 }

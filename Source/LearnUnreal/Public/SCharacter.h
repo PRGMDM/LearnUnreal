@@ -14,6 +14,7 @@ class USAttributeComponent;
 class UParticleSystem;
 class UInputAction;
 class UInputMappingContext;
+class USActionComponent;
 
 UCLASS()
 class LEARNUNREAL_API ASCharacter : public ACharacter
@@ -61,6 +62,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USAttributeComponent* AttributeComp;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Components")
+    USActionComponent* ActionComp;
+
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     UInputMappingContext* InputMapping;
 
@@ -85,6 +89,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     UInputAction* DashAction;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputAction* SprintAction;
+
     FTimerHandle TimerHandle_PrimaryAttack;
     FTimerHandle TimerHandle_BlackHoleAttack;
     FTimerHandle TimerHandle_Dash;
@@ -94,6 +101,12 @@ protected:
 
     UFUNCTION()
     void Look(const FInputActionInstance& Instance);
+
+    UFUNCTION()
+    void SprintStart();
+
+    UFUNCTION()
+    void SprintStop();
 
     void PrimaryAttack();
 
@@ -117,6 +130,8 @@ protected:
     void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
 
     virtual void PostInitializeComponents();
+
+    virtual FVector GetPawnViewLocation() const override;
 
 public:
     // Called every frame

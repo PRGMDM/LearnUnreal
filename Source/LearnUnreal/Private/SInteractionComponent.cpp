@@ -4,6 +4,8 @@
 #include "DrawDebugHelpers.h"
 #include "SGameplayInterface.h"
 
+static TAutoConsoleVariable<bool> CVarDebugDrawing(TEXT("DrawDebug"), false, TEXT("Enable/disable debug drawings"), ECVF_Cheat);
+
 // Sets default values
 USInteractionComponent::USInteractionComponent()
 {
@@ -13,6 +15,8 @@ USInteractionComponent::USInteractionComponent()
 
 void USInteractionComponent::PrimaryInteract()
 {
+    bool bDrawDebug = CVarDebugDrawing.GetValueOnGameThread();
+
     UE_LOG(LogTemp, Warning, TEXT("Interaction attempted by character"));
     FCollisionObjectQueryParams ObjectQueryParams;
     ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
@@ -45,13 +49,18 @@ void USInteractionComponent::PrimaryInteract()
             {
                 UE_LOG(LogTemp, Warning, TEXT("Interact line trace hit an actor %s, invoking Interact on the actor"), *HitActor->GetName());
                 ISGameplayInterface::Execute_Interact(HitActor, Cast<APawn>(MyOwner));
-                DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 30.f, 32, FColor::Red, false, 2.0f);
+                if (bDrawDebug)
+                {
+                    DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 30.f, 32, FColor::Red, false, 2.0f);
+                }
                 break;
             }
         }
     }
-
-    DrawDebugLine(GetWorld(), EyeLocation, End, FColor::Red, false, 2.f, 0, 2.0f);
+    if (bDrawDebug)
+    {
+        DrawDebugLine(GetWorld(), EyeLocation, End, FColor::Red, false, 2.f, 0, 2.0f);
+    }
 }
 
 // Called when the game starts or when spawned
