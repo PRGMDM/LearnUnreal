@@ -35,7 +35,7 @@ ASCharacter::ASCharacter()
     bUseControllerRotationYaw = false;
 }
 
-void ASCharacter::HealSelf(float Amount /* = 100.f */)
+void ASCharacter::HealSelf(float Amount)
 {
     AttributeComp->ApplyHealthChange(this, Amount);
 }
@@ -103,10 +103,12 @@ void ASCharacter::PrimaryAttack()
 
 void ASCharacter::BlackHoleAttack()
 {
+    ActionComp->StartActionByName(this, "SecondaryAttack");
 }
 
 void ASCharacter::Dash()
 {
+    ActionComp->StartActionByName(this, "Dash");
 }
 
 void ASCharacter::PrimaryInteract()
@@ -127,13 +129,6 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
     }
 }
 
-// Called every frame
-void ASCharacter::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
-}
-
-// Called to bind functionality to input
 void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -143,9 +138,9 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
     Input->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASCharacter::Look);
     Input->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ASCharacter::Jump);
     Input->BindAction(PrimaryAttackAction, ETriggerEvent::Completed, this, &ASCharacter::PrimaryAttack);
-    Input->BindAction(SecondaryAttackAction, ETriggerEvent::Triggered, this, &ASCharacter::BlackHoleAttack);
-    Input->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ASCharacter::PrimaryInteract);
-    Input->BindAction(DashAction, ETriggerEvent::Triggered, this, &ASCharacter::Dash);
+    Input->BindAction(SecondaryAttackAction, ETriggerEvent::Completed, this, &ASCharacter::BlackHoleAttack);
+    Input->BindAction(InteractAction, ETriggerEvent::Completed, this, &ASCharacter::PrimaryInteract);
+    Input->BindAction(DashAction, ETriggerEvent::Completed, this, &ASCharacter::Dash);
     Input->BindAction(SprintAction, ETriggerEvent::Started, this, &ASCharacter::SprintStart);
     Input->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASCharacter::SprintStop);
 }
