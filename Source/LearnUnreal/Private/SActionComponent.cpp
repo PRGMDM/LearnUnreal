@@ -50,6 +50,10 @@ bool USActionComponent::StopActionByName(AActor* InstigatorActor, FName ActionNa
 void USActionComponent::BeginPlay()
 {
     Super::BeginPlay();
+    for (TSubclassOf<USAction> Action : DefaultActions)
+    {
+        AddAction(Action);
+    }
 }
 
 void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
