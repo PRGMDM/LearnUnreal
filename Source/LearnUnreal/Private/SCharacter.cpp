@@ -2,12 +2,12 @@
 
 #include "SCharacter.h"
 #include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "SAction.h"
 #include "SActionComponent.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
@@ -33,8 +33,6 @@ ASCharacter::ASCharacter()
 
     GetCharacterMovement()->bOrientRotationToMovement = true;
     bUseControllerRotationYaw = false;
-
-    HandSocketName = "Muzzle_01";
 }
 
 void ASCharacter::HealSelf(float Amount /* = 100.f */)
@@ -90,100 +88,30 @@ void ASCharacter::Look(const FInputActionInstance& Instance)
 
 void ASCharacter::SprintStart()
 {
-    UE_LOG(LogTemp, Log, TEXT("Sprinting started"));
     ActionComp->StartActionByName(this, "Sprint");
 }
 
 void ASCharacter::SprintStop()
 {
-    UE_LOG(LogTemp, Log, TEXT("Sprinting stoped"));
-
     ActionComp->StopActionByName(this, "Sprint");
-}
-
-void ASCharacter::PlayAttackEffects()
-{
-    PlayAnimMontage(AttackAnim);
-    UGameplayStatics::SpawnEmitterAttached(AttackVFX, GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
 }
 
 void ASCharacter::PrimaryAttack()
 {
-    PlayAttackEffects();
-    GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f);
-    // GetWorldTimerManager().ClearTimer(handle) stops the timer from running when character dies etc.
-    // TODO: use animation notify is better, will get to this later.
-}
-
-void ASCharacter::PrimaryAttack_TimeElapsed()
-{
-    SpawnProjectile(ProjectileClass);
+    ActionComp->StartActionByName(this, "PrimaryAttack");
 }
 
 void ASCharacter::BlackHoleAttack()
 {
-    PlayAttackEffects();
-
-    GetWorldTimerManager().SetTimer(TimerHandle_BlackHoleAttack, this, &ASCharacter::BlackHoleAttack_TimeElapsed, 0.2f);
-}
-
-void ASCharacter::BlackHoleAttack_TimeElapsed()
-{
-    SpawnProjectile(BlackHoleClass);
 }
 
 void ASCharacter::Dash()
 {
-    PlayAttackEffects();
-
-    GetWorldTimerManager().SetTimer(TimerHandle_Dash, this, &ASCharacter::Dash_TimeElapsed, 0.2f);
-}
-
-void ASCharacter::Dash_TimeElapsed()
-{
-    SpawnProjectile(DashProjectileClass);
 }
 
 void ASCharacter::PrimaryInteract()
 {
     InteractionComp->PrimaryInteract();
-}
-
-void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
-{
-    if (ensureAlways(ClassToSpawn))
-    {
-        // The muzzle on the right hand of Gideon.
-        FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
-
-        FCollisionShape Shape;
-        Shape.SetSphere(20.f);
-
-        FCollisionQueryParams Params;
-        Params.AddIgnoredActor(this);
-
-        FCollisionObjectQueryParams ObjParams;
-        ObjParams.AddObjectTypesToQuery(ECC_WorldStatic); // TODO: When look above, the camera could be in the hitbox of landscape, what to do? make the trace start further away.
-        ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-        ObjParams.AddObjectTypesToQuery(ECC_Pawn);
-
-        FVector Start = CameraComp->GetComponentLocation();
-        FVector End = Start + GetControlRotation().Vector() * 10000;
-
-        FHitResult Hit;
-        if (GetWorld()->SweepSingleByObjectType(Hit, Start, End, FQuat::Identity, ObjParams, Shape, Params))
-        {
-            End = Hit.ImpactPoint;
-        }
-
-        FRotator ProjRotation = FRotationMatrix::MakeFromX(End - HandLocation).Rotator();
-        FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-        SpawnParams.Instigator = this;
-        AActor* Projectile = GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
-        GetCapsuleComponent()->IgnoreActorWhenMoving(Projectile, true);
-    }
 }
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta)
@@ -214,7 +142,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
     Input->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASCharacter::Move);
     Input->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASCharacter::Look);
     Input->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ASCharacter::Jump);
-    Input->BindAction(PrimaryAttackAction, ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
+    Input->BindAction(PrimaryAttackAction, ETriggerEvent::Completed, this, &ASCharacter::PrimaryAttack);
     Input->BindAction(SecondaryAttackAction, ETriggerEvent::Triggered, this, &ASCharacter::BlackHoleAttack);
     Input->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ASCharacter::PrimaryInteract);
     Input->BindAction(DashAction, ETriggerEvent::Triggered, this, &ASCharacter::Dash);

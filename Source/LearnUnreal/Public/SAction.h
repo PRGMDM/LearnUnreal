@@ -6,6 +6,8 @@
 #include "UObject/NoExportTypes.h"
 #include "SAction.generated.h"
 
+class UWorld;
+
 UCLASS(Blueprintable)
 class LEARNUNREAL_API USAction : public UObject
 {
@@ -20,4 +22,6 @@ public:
 
     UFUNCTION(BlueprintNativeEvent, Category = "Action")
     void StopAction(AActor* InstigatorActor);
+
+    UWorld* GetWorld() const override;
 };

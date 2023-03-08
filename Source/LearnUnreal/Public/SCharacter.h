@@ -39,25 +39,7 @@ protected:
     UCameraComponent* CameraComp;
 
     UPROPERTY(EditAnywhere)
-    TSubclassOf<AActor> ProjectileClass;
-
-    UPROPERTY(EditAnywhere)
-    TSubclassOf<AActor> DashProjectileClass;
-
-    UPROPERTY(EditAnywhere)
-    TSubclassOf<AActor> BlackHoleClass;
-
-    UPROPERTY(EditAnywhere)
     USInteractionComponent* InteractionComp;
-
-    UPROPERTY(EditAnywhere, Category = "Attack")
-    UAnimMontage* AttackAnim;
-
-    UPROPERTY(EditAnywhere, Category = "Effects")
-    UParticleSystem* AttackVFX;
-
-    UPROPERTY(VisibleAnywhere, Category = "Effects")
-    FName HandSocketName;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USAttributeComponent* AttributeComp;
@@ -92,10 +74,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     UInputAction* SprintAction;
 
-    FTimerHandle TimerHandle_PrimaryAttack;
-    FTimerHandle TimerHandle_BlackHoleAttack;
-    FTimerHandle TimerHandle_Dash;
-
     UFUNCTION()
     void Move(const FInputActionInstance& Instance);
 
@@ -110,30 +88,19 @@ protected:
 
     void PrimaryAttack();
 
-    void PrimaryAttack_TimeElapsed();
-
     void PrimaryInteract();
 
     void BlackHoleAttack();
 
-    void BlackHoleAttack_TimeElapsed();
-
     void Dash();
-
-    void Dash_TimeElapsed();
-
-    void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
-
-    void PlayAttackEffects();
 
     UFUNCTION()
     void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
 
     virtual void PostInitializeComponents();
 
-    virtual FVector GetPawnViewLocation() const override;
-
 public:
+    virtual FVector GetPawnViewLocation() const override;
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
