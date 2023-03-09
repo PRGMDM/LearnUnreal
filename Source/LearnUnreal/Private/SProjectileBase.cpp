@@ -12,7 +12,6 @@ ASProjectileBase::ASProjectileBase()
 {
     SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
     SphereComp->SetCollisionProfileName("Projectile");
-    SphereComp->OnComponentHit.AddDynamic(this, &ASProjectileBase::OnActorHit);
     RootComponent = SphereComp;
 
     EffectComp = CreateDefaultSubobject<UParticleSystemComponent>("EffectComp");
@@ -30,7 +29,7 @@ ASProjectileBase::ASProjectileBase()
 
 void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-    UE_LOG(LogTemp, Warning, TEXT("%s"), *(OtherComp->GetReadableName()));
+    UE_LOG(LogTemp, Log, TEXT("Projectile hits %s"), *(OtherComp->GetReadableName()));
     Explode();
 }
 
@@ -47,5 +46,6 @@ void ASProjectileBase::Explode_Implementation()
 void ASProjectileBase::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
+    SphereComp->OnComponentHit.AddDynamic(this, &ASProjectileBase::OnActorHit);
     AudioComp->Play();
 }

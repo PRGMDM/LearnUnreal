@@ -1,24 +1,29 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SMagicProjectile.h"
+#include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "SAttributeComponent.h"
 #include "SGameplayFunctionLibrary.h"
 
-void ASMagicProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ASMagicProjectile::PostInitializeComponents()
 {
-    if (OtherActor)
+    Super::PostInitializeComponents();
+
+    // More consistent to bind here compared to Constructor which may fail to bind if Blueprint was created before adding this binding (or when using hotreload)
+    // PostInitializeComponent is the preferred way of binding any events.
+    SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap);
+}
+
+void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    UE_LOG(LogTemp, Log, TEXT("Projectile overlaps with %s"), *(OtherComp->GetReadableName()));
+    if (OtherActor && OtherActor != GetInstigator())
     {
-        /* UGameplayStatics::PlayWorldCameraShake(this, ShakeEffect, Hit.Location, 0, 1000);
-
-         USAttributeComponent* AttributeComp = USAttributeComponent::GetAttributes(OtherActor);
-         if (AttributeComp)
-         {
-             AttributeComp->ApplyHealthChange(GetInstigator(), -20.f);
-         }*/
-
-        USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -20.f, Hit);
+        if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -20, SweepResult))
+        {
+            UE_LOG(LogTemp, Log, TEXT("Projectile Exploding."));
+            Explode();
+        }
     }
-    // TODO: Do I put this in else? Also, seems the time for collision overhaul is finally here.
-    ASProjectileBase::OnActorHit(HitComponent, OtherActor, OtherComp, NormalImpulse, Hit);
 }

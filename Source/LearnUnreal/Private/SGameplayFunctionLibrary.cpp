@@ -8,7 +8,7 @@ bool USGameplayFunctionLibrary::ApplyDamage(AActor* InstigatorActor, AActor* Tar
     USAttributeComponent* AttrComp = USAttributeComponent::GetAttributes(Target);
     if (AttrComp)
     {
-        AttrComp->ApplyHealthChange(InstigatorActor, DamageAmount);
+        return AttrComp->ApplyHealthChange(InstigatorActor, DamageAmount);
     }
     return false;
 }
@@ -20,6 +20,7 @@ bool USGameplayFunctionLibrary::ApplyDirectionalDamage(AActor* InstigatorActor, 
         UPrimitiveComponent* HitComp = HitResult.GetComponent();
         if (HitComp && HitComp->IsSimulatingPhysics(HitResult.BoneName))
         {
+            // TODO: impact normal is not in coming direction
             HitComp->AddImpulseAtLocation(-HitResult.ImpactNormal * 3000000.f, HitResult.ImpactPoint, HitResult.BoneName);
         }
         return true;
