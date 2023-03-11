@@ -20,7 +20,7 @@ void USAction::StopAction_Implementation(AActor* InstigatorActor)
     bIsRunning = false;
 }
 
-bool USAction::CanStart_Implementation(AActor* Instigator)
+bool USAction::CanStart_Implementation(AActor* InstigatorActor)
 {
     if (bIsRunning)
     {

@@ -5,6 +5,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "SActionComponent.h"
+#include "SActionEffect.h"
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
 #include "SGameplayFunctionLibrary.h"
@@ -12,9 +13,6 @@
 void ASMagicProjectile::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
-
-    // More consistent to bind here compared to Constructor which may fail to bind if Blueprint was created before adding this binding (or when using hotreload)
-    // PostInitializeComponent is the preferred way of binding any events.
     SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap);
 }
 
@@ -35,10 +33,13 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
             return;
         }
 
-        if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -20, SweepResult))
+        if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -DamageAmount, SweepResult))
         {
-            UE_LOG(LogTemp, Log, TEXT("Projectile Exploding."));
             Explode();
+            if (ActionComp)
+            {
+                ActionComp->AddAction(BurningEffectClass, GetInstigator());
+            }
         }
     }
 }

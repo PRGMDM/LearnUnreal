@@ -8,6 +8,9 @@
 #include "SProjectileBase.h"
 #include "SMagicProjectile.generated.h"
 
+class USActionEffect;
+// TODO: Maybe add a lifespan, destroy self if go too far/after some time.
+
 UCLASS()
 class LEARNUNREAL_API ASMagicProjectile : public ASProjectileBase
 {
@@ -20,12 +23,14 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Damage")
     FGameplayTag ParryTag;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Damage")
+    float DamageAmount;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Damage")
+    TSubclassOf<USActionEffect> BurningEffectClass;
+
     UFUNCTION()
     void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
     virtual void PostInitializeComponents() override;
 };
-// TODO: Maybe ditch the hit event and go for the overlap event and then decide what to do with the projectile.
-// i.e. go through if the other actor is owner/teammate and explode/deal damage and destroy self in other cases.
-
-// TODO: Maybe add a lifespan, destroy self if go too far/after some time.

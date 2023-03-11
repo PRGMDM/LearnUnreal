@@ -19,6 +19,9 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Action")
     FName ActionName;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Action")
+    bool bAutoStart = false;
+
     UFUNCTION(BlueprintNativeEvent, Category = "Action")
     void StartAction(AActor* InstigatorActor);
 
@@ -26,7 +29,7 @@ public:
     void StopAction(AActor* InstigatorActor);
 
     UFUNCTION(BlueprintNativeEvent, Category = "Action")
-    bool CanStart(AActor* Instigator);
+    bool CanStart(AActor* InstigatorActor);
 
     UFUNCTION(BlueprintCallable, Category = "Action")
     bool IsRunning() const;

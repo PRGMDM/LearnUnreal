@@ -21,7 +21,10 @@ public:
     FGameplayTagContainer ActiveGameplayTags;
 
     UFUNCTION(BlueprintCallable, Category = "Actions")
-    void AddAction(TSubclassOf<USAction> ActionClass);
+    void AddAction(TSubclassOf<USAction> ActionClass, AActor* InstigatorActor);
+
+    UFUNCTION(BlueprintCallable, Category = "Actions")
+    void RemoveAction(USAction* Action);
 
     UFUNCTION(BlueprintCallable, Category = "Actions")
     bool StartActionByName(AActor* InstigatorActor, FName ActionName);
