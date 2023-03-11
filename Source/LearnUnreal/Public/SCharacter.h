@@ -15,6 +15,7 @@ class UParticleSystem;
 class UInputAction;
 class UInputMappingContext;
 class USActionComponent;
+struct FInputActionInstance;
 
 UCLASS()
 class LEARNUNREAL_API ASCharacter : public ACharacter
@@ -74,16 +75,15 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     UInputAction* SprintAction;
 
-    UFUNCTION()
+    UPROPERTY(EditDefaultsOnly, Category = "Input")
+    UInputAction* ParryAction;
+
     void Move(const FInputActionInstance& Instance);
 
-    UFUNCTION()
     void Look(const FInputActionInstance& Instance);
 
-    UFUNCTION()
     void SprintStart();
 
-    UFUNCTION()
     void SprintStop();
 
     void PrimaryAttack();
@@ -91,6 +91,8 @@ protected:
     void PrimaryInteract();
 
     void BlackHoleAttack();
+
+    void Parry();
 
     void Dash();
 

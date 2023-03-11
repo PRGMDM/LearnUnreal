@@ -38,7 +38,6 @@ EBTNodeResult::Type USBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
         Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
         Params.Instigator = MyPawn;
         AActor* Projectile = GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, Params);
-        if (Projectile) MyPawn->GetMesh()->IgnoreActorWhenMoving(Projectile, true); // TODO: Can I fix this by fixing channel?
         return Projectile ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
     }
     return EBTNodeResult::Failed;

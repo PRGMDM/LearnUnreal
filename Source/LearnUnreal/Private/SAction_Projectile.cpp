@@ -63,7 +63,6 @@ void USAction_Projectile::Attack_Elapsed(ASCharacter* InstigatorActor)
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
         SpawnParams.Instigator = InstigatorActor;
         AActor* Projectile = GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
-        InstigatorActor->GetCapsuleComponent()->IgnoreActorWhenMoving(Projectile, true); // TODO: delete this after fixing collision.
     }
     StopAction(InstigatorActor);
 }

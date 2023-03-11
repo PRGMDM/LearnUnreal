@@ -21,7 +21,7 @@ bool USGameplayFunctionLibrary::ApplyDirectionalDamage(AActor* InstigatorActor, 
         if (HitComp && HitComp->IsSimulatingPhysics(HitResult.BoneName))
         {
             // TODO: impact normal is not in coming direction
-            HitComp->AddImpulseAtLocation(-HitResult.ImpactNormal * 3000000.f, HitResult.ImpactPoint, HitResult.BoneName);
+            HitComp->AddImpulseAtLocation(-HitResult.ImpactNormal * 300000.f, HitResult.ImpactPoint, HitResult.BoneName);
         }
         return true;
     }

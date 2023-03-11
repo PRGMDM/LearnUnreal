@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayTagContainer.h"
 #include "SProjectileBase.h"
 #include "SMagicProjectile.generated.h"
 
@@ -15,6 +16,9 @@ class LEARNUNREAL_API ASMagicProjectile : public ASProjectileBase
 protected:
     UPROPERTY(EditAnywhere, Category = "Effect")
     TSubclassOf<UCameraShakeBase> ShakeEffect;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Damage")
+    FGameplayTag ParryTag;
 
     UFUNCTION()
     void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

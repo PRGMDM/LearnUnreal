@@ -105,6 +105,12 @@ void ASCharacter::BlackHoleAttack()
     ActionComp->StartActionByName(this, "SecondaryAttack");
 }
 
+void ASCharacter::Parry()
+{
+    UE_LOG(LogTemp, Log, TEXT("Parrying"));
+    ActionComp->StartActionByName(this, "Parry");
+}
+
 void ASCharacter::Dash()
 {
     ActionComp->StartActionByName(this, "Dash");
@@ -142,4 +148,5 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
     Input->BindAction(DashAction, ETriggerEvent::Completed, this, &ASCharacter::Dash);
     Input->BindAction(SprintAction, ETriggerEvent::Started, this, &ASCharacter::SprintStart);
     Input->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASCharacter::SprintStop);
+    Input->BindAction(ParryAction, ETriggerEvent::Started, this, &ASCharacter::Parry);
 }
