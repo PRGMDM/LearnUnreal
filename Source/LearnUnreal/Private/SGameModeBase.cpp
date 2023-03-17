@@ -7,6 +7,7 @@
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
+#include "SPlayerState.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("SpawnBots"), true, TEXT("Enable/disable bots spawning"), ECVF_Cheat);
 
@@ -35,6 +36,9 @@ void ASGameModeBase::KillAll()
 
 void ASGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
 {
+    UE_LOG(LogTemp, Log, TEXT("OnActorKilled: victim: %s, killer: %s"), *GetNameSafe(Victim), *GetNameSafe(Killer));
+
+    // Respawn if player is killed
     ASCharacter* Player = Cast<ASCharacter>(Victim);
     if (Player)
     {
@@ -44,7 +48,17 @@ void ASGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
         float RespawnDelay = 2.f;
         GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
     }
-    UE_LOG(LogTemp, Log, TEXT("OnActorKilled: victim: %s, killer: %s"), *GetNameSafe(Victim), *GetNameSafe(Killer));
+
+    // Give credits if player killed someone
+    Player = Cast<ASCharacter>(Killer);
+    if (Player)
+    {
+        ASPlayerState* State = Player->GetPlayerState<ASPlayerState>();
+        if (ensure(State))
+        {
+            State->ModifyCredit(RewardForKill);
+        }
+    }
 }
 
 void ASGameModeBase::SpawnBotTimerElapsed()

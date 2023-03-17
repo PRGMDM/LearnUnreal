@@ -39,6 +39,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "AI")
     UCurveFloat* DifficultyCurve;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Credits")
+    float RewardForKill;
+
     UFUNCTION()
     void SpawnBotTimerElapsed();
 
