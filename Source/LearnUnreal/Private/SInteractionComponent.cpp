@@ -2,7 +2,9 @@
 
 #include "SInteractionComponent.h"
 #include "DrawDebugHelpers.h"
+#include "SCharacter.h"
 #include "SGameplayInterface.h"
+#include "SWorldUserWidget.h"
 
 static TAutoConsoleVariable<bool> CVarDebugDrawing(TEXT("DrawDebug"), false, TEXT("Enable/disable debug drawings"), ECVF_Cheat);
 
@@ -15,30 +17,42 @@ USInteractionComponent::USInteractionComponent()
 
 void USInteractionComponent::PrimaryInteract()
 {
+    if (FocusedActor == nullptr)
+    {
+        UE_LOG(LogTemp, Error, TEXT("No focused actor to interact with"));
+        return;
+    }
+    APawn* MyPawn = Cast<APawn>(GetOwner());
+    ISGameplayInterface::Execute_Interact(FocusedActor, MyPawn);
+}
+
+void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    FindBestInteractable();
+}
+
+void USInteractionComponent::FindBestInteractable()
+{
     bool bDrawDebug = CVarDebugDrawing.GetValueOnGameThread();
 
-    UE_LOG(LogTemp, Warning, TEXT("Interaction attempted by character"));
     FCollisionObjectQueryParams ObjectQueryParams;
-    ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+    ObjectQueryParams.AddObjectTypesToQuery(CollisionChannel);
 
-    AActor* MyOwner = GetOwner();
+    ASCharacter* MyOwner = Cast<ASCharacter>(GetOwner());
+    ensureAlways(MyOwner);
 
-    // TODO: might want to change the starting point to camera.
-    FVector EyeLocation;
-    FRotator EyeRotation;
-    MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation); // Returns the same thing as GetControlRotation in this case.
-    FString name;
-    MyOwner->GetName(name);
+    FVector CamLocation = MyOwner->GetPawnViewLocation();
+    FRotator EyeRotation = MyOwner->GetControlRotation();
 
-    FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
-
-    // FHitResult Hit;
-    // GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectQueryParams);
+    FVector End = CamLocation + (EyeRotation.Vector() * TraceDistance);
 
     TArray<FHitResult> Hits;
     FCollisionShape Shape;
-    Shape.SetSphere(30.f);
-    GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams, Shape);
+    Shape.SetSphere(TraceRadius);
+    GetWorld()->SweepMultiByObjectType(Hits, CamLocation, End, FQuat::Identity, ObjectQueryParams, Shape);
+
+    FocusedActor = nullptr;
 
     for (auto Hit : Hits)
     {
@@ -47,8 +61,7 @@ void USInteractionComponent::PrimaryInteract()
         {
             if (HitActor->Implements<USGameplayInterface>())
             {
-                UE_LOG(LogTemp, Warning, TEXT("Interact line trace hit an actor %s, invoking Interact on the actor"), *HitActor->GetName());
-                ISGameplayInterface::Execute_Interact(HitActor, Cast<APawn>(MyOwner));
+                FocusedActor = HitActor;
                 if (bDrawDebug)
                 {
                     DrawDebugSphere(GetWorld(), Hit.ImpactPoint, 30.f, 32, FColor::Red, false, 2.0f);
@@ -57,20 +70,30 @@ void USInteractionComponent::PrimaryInteract()
             }
         }
     }
+
+    if (FocusedActor)
+    {
+        if (DefaultWidgetInstance == nullptr && ensure(DefaultWidgetClass))
+        {
+            DefaultWidgetInstance = CreateWidget<USWorldUserWidget>(GetWorld(), DefaultWidgetClass);
+        }
+
+        if (DefaultWidgetInstance)
+        {
+            DefaultWidgetInstance->AttachedActor = FocusedActor;
+            if (!DefaultWidgetInstance->IsInViewport())
+            {
+                DefaultWidgetInstance->AddToViewport();
+            }
+        }
+    }
+    else if (DefaultWidgetInstance)
+    {
+        DefaultWidgetInstance->RemoveFromParent();
+    }
+
     if (bDrawDebug)
     {
-        DrawDebugLine(GetWorld(), EyeLocation, End, FColor::Red, false, 2.f, 0, 2.0f);
+        DrawDebugLine(GetWorld(), CamLocation, End, FColor::Red, false, 2.f, 0, 2.0f);
     }
-}
-
-// Called when the game starts or when spawned
-void USInteractionComponent::BeginPlay()
-{
-    Super::BeginPlay();
-}
-
-// Called every frame
-void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
