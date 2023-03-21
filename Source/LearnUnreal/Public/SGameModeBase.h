@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "GameFramework/GameModeBase.h"
+#include "SPowerupItemBase.h"
 #include "SGameModeBase.generated.h"
 
 class UEnvQuery;
@@ -39,14 +40,23 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "AI")
     UCurveFloat* DifficultyCurve;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Items")
+    UEnvQuery* SpawnItemsQuery;
+
     UPROPERTY(EditDefaultsOnly, Category = "Credits")
     float RewardForKill;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Items")
+    TArray<TSubclassOf<ASPowerupItemBase>> ItemClasses;
 
     UFUNCTION()
     void SpawnBotTimerElapsed();
 
     UFUNCTION()
-    void OnQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+    void OnSpawnBotsQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+    UFUNCTION()
+    void OnSpawnItemsQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
     UFUNCTION()
     void RespawnPlayerElapsed(AController* Controller);

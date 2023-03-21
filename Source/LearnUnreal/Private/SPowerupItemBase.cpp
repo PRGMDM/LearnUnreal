@@ -10,6 +10,8 @@ ASPowerupItemBase::ASPowerupItemBase()
     SphereComp->SetCollisionProfileName("Powerup");
     RootComponent = SphereComp;
 
+    SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
     Cooldown = 10.f;
 }
 

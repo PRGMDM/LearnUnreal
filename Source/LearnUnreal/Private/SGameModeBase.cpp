@@ -5,6 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "Math/UnrealMathUtility.h"
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
 #include "SPlayerState.h"
@@ -20,6 +21,12 @@ void ASGameModeBase::StartPlay()
 {
     Super::StartPlay();
     GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ASGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true);
+    // TODO: A better query in editor, RandomXPct returns one result. How to find random locations within a fixed area (specified by location?)
+    UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnItemsQuery, this, EEnvQueryRunMode::RandomBest25Pct, nullptr);
+    if (QueryInstance)
+    {
+        QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnSpawnItemsQueryComplete);
+    }
 }
 
 void ASGameModeBase::KillAll()
@@ -92,12 +99,12 @@ void ASGameModeBase::SpawnBotTimerElapsed()
         UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
         if (QueryInstance)
         {
-            QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnQueryComplete);
+            QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnSpawnBotsQueryComplete);
         }
     }
 }
 
-void ASGameModeBase::OnQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+void ASGameModeBase::OnSpawnBotsQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
 {
     if (QueryStatus == EEnvQueryStatus::Success)
     {
@@ -105,14 +112,29 @@ void ASGameModeBase::OnQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryIns
         if (Locations.Num() > 0)
         {
             DrawDebugSphere(GetWorld(), Locations[0], 100, 10, FColor::Black, true, 10, 0, 5);
-            // FActorSpawnParameters Params;
-            // Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
             GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
         }
     }
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("Failed to spawn bots."));
+        return;
+    }
+}
+
+void ASGameModeBase::OnSpawnItemsQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+{
+    if (QueryStatus == EEnvQueryStatus::Success)
+    {
+        TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
+        for (FVector Location : Locations)
+        {
+            GetWorld()->SpawnActor<AActor>(ItemClasses[FMath::RandRange(0, Locations.Num() - 1)], Location, FRotator::ZeroRotator);
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to spawn items."));
         return;
     }
 }
