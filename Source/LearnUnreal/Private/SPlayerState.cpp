@@ -4,11 +4,17 @@
 
 bool ASPlayerState::ModifyCredit(float Amount)
 {
-    UE_LOG(LogTemp, Log, TEXT("%f is given"), Amount);
+    UE_LOG(LogTemp, Log, TEXT("%f credits are given to player"), Amount);
     if (Amount > 0.f || Credits + Amount >= 0.f)
     {
         Credits += Amount;
+        OnCreditsChanged.Broadcast();
         return true;
     }
     return false;
+}
+
+float ASPlayerState::GetCredits() const
+{
+    return Credits;
 }

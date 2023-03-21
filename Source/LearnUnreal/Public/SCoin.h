@@ -4,23 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "SPowerupItemBase.h"
-#include "SHealthPotion.generated.h"
+#include "SCoin.generated.h"
 
-class UStaticMeshComponent;
-
+/**
+ *
+ */
 UCLASS()
-class LEARNUNREAL_API ASHealthPotion : public ASPowerupItemBase
+class LEARNUNREAL_API ASCoin : public ASPowerupItemBase
 {
     GENERATED_BODY()
-
-    ASHealthPotion();
+public:
+    ASCoin();
 
     void Interact_Implementation(APawn* InstigatorPawn) override;
 
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Component")
-    UStaticMeshComponent* MeshComp;
+    TObjectPtr<UStaticMeshComponent> MeshComp;
 
     UPROPERTY(EditDefaultsOnly, Category = "Credits")
-    float Cost = 30;
+    float GrantCredits = 50;
 };

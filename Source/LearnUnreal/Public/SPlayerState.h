@@ -6,9 +6,8 @@
 #include "GameFramework/PlayerState.h"
 #include "SPlayerState.generated.h"
 
-/**
- *
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCreditsChanged);
+
 UCLASS()
 class LEARNUNREAL_API ASPlayerState : public APlayerState
 {
@@ -18,7 +17,12 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Credits")
     bool ModifyCredit(float Amount);
 
+    float GetCredits() const;
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Credits")
     float Credits;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnCreditsChanged OnCreditsChanged;
 };
