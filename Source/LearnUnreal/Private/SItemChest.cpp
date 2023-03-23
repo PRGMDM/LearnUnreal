@@ -1,35 +1,33 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SItemChest.h"
+#include "Net/UnrealNetwork.h"
 
-// Sets default values
 ASItemChest::ASItemChest()
 {
-    // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-    PrimaryActorTick.bCanEverTick = true;
-
     BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>("BaseMesh");
     RootComponent = BaseMesh;
     LidMesh = CreateDefaultSubobject<UStaticMeshComponent>("LidMesh");
     LidMesh->SetupAttachment(BaseMesh);
 
-    TargetPitch = 110.f;
+    SetReplicates(true);
 }
 
 void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Iteraction registered by chest."));
-    LidMesh->SetRelativeRotation(FRotator(TargetPitch, 0, 0));
+    bLidOpened = !bLidOpened;
+    OnRep_LidOpened();
 }
 
-// Called when the game starts or when spawned
-void ASItemChest::BeginPlay()
+void ASItemChest::OnRep_LidOpened()
 {
-    Super::BeginPlay();
+    float CurrPitch = bLidOpened ? TargetPitch : 0;
+    LidMesh->SetRelativeRotation(FRotator(CurrPitch, 0, 0));
 }
 
-// Called every frame
-void ASItemChest::Tick(float DeltaTime)
+void ASItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-    Super::Tick(DeltaTime);
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ASItemChest, bLidOpened);
 }

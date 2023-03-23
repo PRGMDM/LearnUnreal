@@ -19,21 +19,20 @@ public:
     ASItemChest();
 
     UPROPERTY(EditAnywhere)
-    float TargetPitch;
+    float TargetPitch = 110.f;
 
     void Interact_Implementation(APawn* InstigatorPawn);
 
 protected:
-    // Called when the game starts or when spawned
-    virtual void BeginPlay() override;
+    UPROPERTY(ReplicatedUsing = "OnRep_LidOpened")
+    bool bLidOpened = false;
+
+    UFUNCTION()
+    void OnRep_LidOpened();
 
     UPROPERTY(VisibleAnywhere)
     UStaticMeshComponent* BaseMesh;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     UStaticMeshComponent* LidMesh;
-
-public:
-    // Called every frame
-    virtual void Tick(float DeltaTime) override;
 };

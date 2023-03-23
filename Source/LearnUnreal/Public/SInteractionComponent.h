@@ -39,5 +39,8 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Trace")
     TEnumAsByte<ECollisionChannel> CollisionChannel = ECC_WorldDynamic;
 
+    UFUNCTION(Server, Reliable)
+    void ServerInteract(AActor* InFocus);
+
     void FindBestInteractable();
 };

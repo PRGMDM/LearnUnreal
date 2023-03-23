@@ -17,19 +17,28 @@ USInteractionComponent::USInteractionComponent()
 
 void USInteractionComponent::PrimaryInteract()
 {
-    if (FocusedActor == nullptr)
-    {
-        UE_LOG(LogTemp, Error, TEXT("No focused actor to interact with"));
-        return;
-    }
-    APawn* MyPawn = Cast<APawn>(GetOwner());
-    ISGameplayInterface::Execute_Interact(FocusedActor, MyPawn);
+    ServerInteract(FocusedActor);
 }
 
 void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    FindBestInteractable();
+    APawn* MyPawn = Cast<APawn>(GetOwner());
+    if (MyPawn->IsLocallyControlled())
+    {
+        FindBestInteractable();
+    }
+}
+
+void USInteractionComponent::ServerInteract_Implementation(AActor* InFocus)
+{
+    if (InFocus == nullptr)
+    {
+        UE_LOG(LogTemp, Error, TEXT("No focused actor to interact with"));
+        return;
+    }
+    APawn* MyPawn = Cast<APawn>(GetOwner());
+    ISGameplayInterface::Execute_Interact(InFocus, MyPawn);
 }
 
 void USInteractionComponent::FindBestInteractable()
