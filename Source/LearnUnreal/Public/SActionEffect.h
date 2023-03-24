@@ -20,10 +20,10 @@ public:
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
-    float Duration;
+    float Duration = 0.f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
-    float Period;
+    float Period = 0.f;
 
     FTimerHandle DurationHandle;
     FTimerHandle PeriodHandle;
