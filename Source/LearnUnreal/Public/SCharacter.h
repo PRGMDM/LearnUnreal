@@ -27,7 +27,14 @@ public:
     ASCharacter();
 
     UFUNCTION(Exec)
-    void HealSelf(float Amount = 100.f);
+    void HealSelf(float Amount);
+
+    UFUNCTION(Exec)
+    void IncreaseRage(float Amount);
+
+    virtual FVector GetPawnViewLocation() const override;
+
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
     // Called when the game starts or when spawned
@@ -78,6 +85,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Input")
     UInputAction* ParryAction;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Ability")
+    float BlackHoleRageCost = 100.f;
+
     void Move(const FInputActionInstance& Instance);
 
     void Look(const FInputActionInstance& Instance);
@@ -100,9 +110,4 @@ protected:
     void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
 
     virtual void PostInitializeComponents();
-
-public:
-    virtual FVector GetPawnViewLocation() const override;
-
-    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

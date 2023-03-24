@@ -8,7 +8,6 @@ static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("DamageMult"), 1.f,
 // Sets default values for this component's properties
 USAttributeComponent::USAttributeComponent()
 {
-    HealthMax = 100;
     Health = HealthMax;
 }
 
@@ -30,6 +29,11 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
     float ActualDelta = Health - OldHealth;
     OnHealthChanged.Broadcast(InstigatorActor, this, Health, ActualDelta);
 
+    if (ActualDelta < 0.f)
+    {
+        ApplyRageChange(-ActualDelta * DamageToRageMultiplier);
+    }
+
     if (ActualDelta < 0.f && Health == 0.f)
     {
         ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
@@ -38,6 +42,21 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
             GM->OnActorKilled(GetOwner(), InstigatorActor);
         }
     }
+
+    return ActualDelta != 0;
+}
+
+bool USAttributeComponent::ApplyRageChange(float Delta)
+{
+    if (Delta < 0.f && (Rage + Delta < 0.f))
+    {
+        return false;
+    }
+
+    float OldRage = Rage;
+    Rage = FMath::Clamp(Rage + Delta, 0.f, RageMax);
+    float ActualDelta = Rage - OldRage;
+    OnRageChanged.Broadcast(this, Rage);
 
     return ActualDelta != 0;
 }
@@ -55,6 +74,11 @@ bool USAttributeComponent::IsFullHealth() const
 float USAttributeComponent::GetHealthMax() const
 {
     return HealthMax;
+}
+
+float USAttributeComponent::GetRageMax() const
+{
+    return RageMax;
 }
 
 bool USAttributeComponent::IsLowHealth() const

@@ -7,6 +7,7 @@
 #include "SAttributeComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, USAttributeComponent*, OwningComp, float, NewHealth, float, Delta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRageChanged, USAttributeComponent*, OwningComp, float, NewRage);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class LEARNUNREAL_API USAttributeComponent : public UActorComponent
@@ -20,8 +21,14 @@ public:
     UPROPERTY(BlueprintAssignable)
     FOnHealthChanged OnHealthChanged;
 
+    UPROPERTY(BlueprintAssignable)
+    FOnRageChanged OnRageChanged;
+
     UFUNCTION(BlueprintCallable, Category = "Attributes")
     bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
+
+    UFUNCTION(BlueprintCallable, Category = "Attributes")
+    bool ApplyRageChange(float Delta);
 
     UFUNCTION(BlueprintCallable)
     bool IsAlive() const;
@@ -31,6 +38,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     float GetHealthMax() const;
+
+    UFUNCTION(BlueprintCallable)
+    float GetRageMax() const;
 
     UFUNCTION(BlueprintCallable)
     bool IsLowHealth() const;
@@ -49,5 +59,14 @@ protected:
     float Health;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
-    float HealthMax;
+    float HealthMax = 100.f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+    float Rage = 0.f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+    float RageMax = 100.f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Attributes")
+    float DamageToRageMultiplier = 1.f;
 };

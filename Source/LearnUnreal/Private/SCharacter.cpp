@@ -37,7 +37,12 @@ ASCharacter::ASCharacter()
 
 void ASCharacter::HealSelf(float Amount)
 {
-    AttributeComp->ApplyHealthChange(this, Amount);
+    AttributeComp->ApplyHealthChange(this, AttributeComp->GetHealthMax());
+}
+
+void ASCharacter::IncreaseRage(float Amount)
+{
+    AttributeComp->ApplyRageChange(AttributeComp->GetRageMax());
 }
 
 void ASCharacter::PostInitializeComponents()
@@ -102,7 +107,14 @@ void ASCharacter::PrimaryAttack()
 
 void ASCharacter::BlackHoleAttack()
 {
-    ActionComp->StartActionByName(this, "SecondaryAttack");
+    if (AttributeComp->ApplyRageChange(-BlackHoleRageCost))
+    {
+        ActionComp->StartActionByName(this, "SecondaryAttack");
+    }
+    else
+    {
+        UE_LOG(LogTemp, Log, TEXT("No enough rage to use blackhole"));
+    }
 }
 
 void ASCharacter::Parry()
