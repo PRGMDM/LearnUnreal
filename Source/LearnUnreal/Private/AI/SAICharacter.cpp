@@ -38,10 +38,18 @@ void ASAICharacter::PostInitializeComponents()
 
 void ASAICharacter::SetTargetActor(AActor* Target)
 {
-    AAIController* AIC = Cast<AAIController>(GetController());
+    TObjectPtr<AAIController> AIC = Cast<AAIController>(GetController());
     if (AIC)
     {
-        UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
+        TObjectPtr<UBlackboardComponent> BBComp = AIC->GetBlackboardComponent();
+
+        TObjectPtr<AActor> CurTarget = Cast<AActor>(BBComp->GetValueAsObject("TargetActor"));
+        if (CurTarget != Target)
+        {
+            TObjectPtr<USWorldUserWidget> EnemySpottedWidget = CreateWidget<USWorldUserWidget>(GetWorld(), EnemySpottedWidgetClass);
+            EnemySpottedWidget->AttachedActor = this;
+            EnemySpottedWidget->AddToViewport();
+        }
         BBComp->SetValueAsObject("TargetActor", Target); // TODO: Make this like AttackRangeKey in SBTService_CheckAttackRange. Can I?
     }
 }

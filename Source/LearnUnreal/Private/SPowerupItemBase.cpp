@@ -12,7 +12,7 @@ ASPowerupItemBase::ASPowerupItemBase()
 
     SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-    SetReplicates(true);
+    bReplicates = true;
 
     Cooldown = 10.f;
 }

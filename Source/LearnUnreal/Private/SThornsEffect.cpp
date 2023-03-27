@@ -38,6 +38,5 @@ void USThornsEffect::ReflectDamage(AActor* InstigatorActor, USAttributeComponent
 {
     TObjectPtr<USAttributeComponent> AttrComp = USAttributeComponent::GetAttributes(InstigatorActor);
     ensure(AttrComp);
-    AttrComp->ApplyHealthChange(GetOwningComponent()->GetOwner(), FMath::CeilToInt(Delta * DamageMultiplier));
-    UE_LOG(LogTemp, Log, TEXT("Reflecting %f dmg to %s"), Delta * DamageMultiplier, *GetNameSafe(InstigatorActor));
+    AttrComp->ApplyHealthChange(GetOwningComponent()->GetOwner(), -FMath::CeilToInt(-Delta * DamageMultiplier));
 }

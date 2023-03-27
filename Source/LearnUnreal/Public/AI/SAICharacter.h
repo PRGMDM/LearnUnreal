@@ -22,13 +22,13 @@ public:
 
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Components")
-    UPawnSensingComponent* PawnSensingComp;
+    TObjectPtr<UPawnSensingComponent> PawnSensingComp;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    USAttributeComponent* AttributeComp;
+    TObjectPtr<USAttributeComponent> AttributeComp;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    USActionComponent* ActionComp;
+    TObjectPtr<USActionComponent> ActionComp;
 
     UPROPERTY(VisibleAnywhere, Category = "Effect")
     FName TimeToHitParamName;
@@ -36,7 +36,10 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "UI")
     TSubclassOf<UUserWidget> HealthBarWidgetClass;
 
-    USWorldUserWidget* ActiveHealthBar;
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<UUserWidget> EnemySpottedWidgetClass;
+
+    TObjectPtr<USWorldUserWidget> ActiveHealthBar;
 
     virtual void PostInitializeComponents() override;
 

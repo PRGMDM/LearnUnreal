@@ -26,7 +26,7 @@ ASProjectileBase::ASProjectileBase()
     AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
     AudioComp->SetupAttachment(RootComponent);
 
-    SetReplicates(true);
+    bReplicates = true;
 }
 
 void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
