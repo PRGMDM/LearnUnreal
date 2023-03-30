@@ -30,8 +30,8 @@ protected:
 
     UFUNCTION()
     void OnActorHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-public:
-    // Called every frame
-    virtual void Tick(float DeltaTime) override;
 };
+
+// TODO: How to make this work in multiplayer:
+// 1. Make sure there is a server RPC that triggers the explosion.
+// 2. Make the impulse firing multicast.

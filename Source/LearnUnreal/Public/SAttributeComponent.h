@@ -36,6 +36,8 @@ public:
     UFUNCTION(BlueprintCallable)
     bool IsFullHealth() const;
 
+    float GetHealth() const;
+
     UFUNCTION(BlueprintCallable)
     float GetHealthMax() const;
 
@@ -55,10 +57,10 @@ public:
     static bool IsActorAlive(AActor* Actor);
 
 protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
     float Health;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
     float HealthMax = 100.f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
@@ -69,4 +71,7 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Attributes")
     float DamageToRageMultiplier = 1.f;
+
+    UFUNCTION(NetMulticast, Reliable)
+    void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
 };

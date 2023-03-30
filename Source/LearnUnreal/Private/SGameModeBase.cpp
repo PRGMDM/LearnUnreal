@@ -10,7 +10,7 @@
 #include "SCharacter.h"
 #include "SPlayerState.h"
 
-static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("SpawnBots"), true, TEXT("Enable/disable bots spawning"), ECVF_Cheat);
+static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("SpawnBots"), false, TEXT("Enable/disable bots spawning"), ECVF_Cheat);
 
 ASGameModeBase::ASGameModeBase()
 {

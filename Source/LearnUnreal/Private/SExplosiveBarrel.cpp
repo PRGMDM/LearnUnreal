@@ -24,6 +24,7 @@ ASExplosiveBarrel::ASExplosiveBarrel()
     ForceComp->ImpulseStrength = 1000.f;
     ForceComp->bImpulseVelChange = true;
 
+    bReplicates = true;
     // TODO: might need to come back later and adjust the collision channel
 }
 
@@ -37,12 +38,5 @@ void ASExplosiveBarrel::BeginPlay()
 void ASExplosiveBarrel::OnActorHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
     ForceComp->FireImpulse();
-    FString CombinedString = FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString());
-    DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
-}
-
-// Called every frame
-void ASExplosiveBarrel::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
+    Destroy();
 }
