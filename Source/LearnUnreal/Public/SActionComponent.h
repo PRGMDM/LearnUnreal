@@ -32,17 +32,17 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Actions")
     bool StopActionByName(AActor* InstigatorActor, FName ActionName);
 
-protected:
-    // Called when the game starts
-    virtual void BeginPlay() override;
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-    UPROPERTY()
+protected:
+    UPROPERTY(Replicated)
     TArray<USAction*> Actions;
 
     UPROPERTY(EditAnywhere, Category = "Actions")
     TArray<TSubclassOf<USAction>> DefaultActions;
 
-public:
-    // Called every frame
-    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+    virtual void BeginPlay() override;
+
+    UFUNCTION(Server, Reliable)
+    void ServerStartAction(AActor* Instigator, FName ActionName);
 };

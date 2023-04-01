@@ -48,7 +48,7 @@ void ASAICharacter::SetTargetActor(AActor* Target)
         {
             TObjectPtr<USWorldUserWidget> EnemySpottedWidget = CreateWidget<USWorldUserWidget>(GetWorld(), EnemySpottedWidgetClass);
             EnemySpottedWidget->AttachedActor = this;
-            EnemySpottedWidget->AddToViewport();
+            EnemySpottedWidget->AddToViewport(10);
         }
         BBComp->SetValueAsObject("TargetActor", Target); // TODO: Make this like AttackRangeKey in SBTService_CheckAttackRange. Can I?
     }

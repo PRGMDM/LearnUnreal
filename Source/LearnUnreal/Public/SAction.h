@@ -36,8 +36,14 @@ public:
 
     UWorld* GetWorld() const override;
 
+    bool IsSupportedForNetworking() const override { return true; }
+
 protected:
+    UPROPERTY(ReplicatedUsing = "OnRep_IsRunning")
     bool bIsRunning;
+
+    UFUNCTION()
+    void OnRep_IsRunning();
 
     UPROPERTY(EditDefaultsOnly, Category = "Tags")
     FGameplayTagContainer GrantsTags;

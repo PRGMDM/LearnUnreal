@@ -3,6 +3,7 @@
 #include "SThornsEffect.h"
 #include "SActionComponent.h"
 #include "SAttributeComponent.h"
+#include "SGameplayFunctionLibrary.h"
 
 USThornsEffect::USThornsEffect()
 {
@@ -13,11 +14,7 @@ USThornsEffect::USThornsEffect()
 void USThornsEffect::StartAction_Implementation(AActor* Instigator)
 {
     Super::StartAction_Implementation(Instigator);
-    TObjectPtr<USActionComponent> ActionComp = GetOwningComponent();
-    ensure(ActionComp);
-    TObjectPtr<AActor> MyCharacter = ActionComp->GetOwner();
-    ensure(MyCharacter);
-    TObjectPtr<USAttributeComponent> AttrComp = USAttributeComponent::GetAttributes(MyCharacter);
+    TObjectPtr<USAttributeComponent> AttrComp = USAttributeComponent::GetAttributes(GetOwningComponent()->GetOwner());
     ensure(AttrComp);
     AttrComp->OnHealthChanged.AddDynamic(this, &USThornsEffect::ReflectDamage);
 }
@@ -25,18 +22,17 @@ void USThornsEffect::StartAction_Implementation(AActor* Instigator)
 void USThornsEffect::StopAction_Implementation(AActor* Instigator)
 {
     Super::StopAction_Implementation(Instigator);
-    TObjectPtr<USActionComponent> ActionComp = GetOwningComponent();
-    ensure(ActionComp);
-    TObjectPtr<AActor> MyCharacter = ActionComp->GetOwner();
-    ensure(MyCharacter);
-    TObjectPtr<USAttributeComponent> AttrComp = USAttributeComponent::GetAttributes(MyCharacter);
+    TObjectPtr<USAttributeComponent> AttrComp = USAttributeComponent::GetAttributes(GetOwningComponent()->GetOwner());
     ensure(AttrComp);
     AttrComp->OnHealthChanged.RemoveDynamic(this, &USThornsEffect::ReflectDamage);
 }
 
 void USThornsEffect::ReflectDamage(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
-    TObjectPtr<USAttributeComponent> AttrComp = USAttributeComponent::GetAttributes(InstigatorActor);
-    ensure(AttrComp);
-    AttrComp->ApplyHealthChange(GetOwningComponent()->GetOwner(), -FMath::CeilToInt(-Delta * DamageMultiplier));
+
+    TObjectPtr<AActor> OwningActor = GetOwningComponent()->GetOwner();
+    if (Delta < 0.f && OwningActor != InstigatorActor)
+    {
+        USGameplayFunctionLibrary::ApplyDamage(OwningActor, InstigatorActor, -FMath::CeilToInt(-Delta * DamageMultiplier));
+    }
 }
