@@ -10,6 +10,19 @@
 class UWorld;
 class USActionComponent;
 
+USTRUCT()
+struct FActionRepData
+{
+    GENERATED_BODY();
+
+public:
+    UPROPERTY()
+    bool bIsRunning;
+
+    UPROPERTY()
+    TObjectPtr<AActor> Instigator;
+};
+
 UCLASS(Blueprintable)
 class LEARNUNREAL_API USAction : public UObject
 {
@@ -39,11 +52,11 @@ public:
     bool IsSupportedForNetworking() const override { return true; }
 
 protected:
-    UPROPERTY(ReplicatedUsing = "OnRep_IsRunning")
-    bool bIsRunning;
+    UPROPERTY(ReplicatedUsing = "OnRep_RepData")
+    FActionRepData RepData;
 
     UFUNCTION()
-    void OnRep_IsRunning();
+    void OnRep_RepData();
 
     UPROPERTY(EditDefaultsOnly, Category = "Tags")
     FGameplayTagContainer GrantsTags;

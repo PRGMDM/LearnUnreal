@@ -24,4 +24,7 @@ class LEARNUNREAL_API ISGameplayInterface
 public:
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
     void Interact(APawn* InstigatorPawn);
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+    void OnActorLoaded();
 };

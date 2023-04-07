@@ -11,13 +11,13 @@
 class UEnvQuery;
 class UEnvQueryInstanceBlueprintWrapper;
 class UCurveFloat;
+class USSaveGame;
 
 UCLASS()
 class LEARNUNREAL_API ASGameModeBase : public AGameModeBase
 {
     GENERATED_BODY()
 public:
-    ASGameModeBase();
     virtual void StartPlay() override;
 
     UFUNCTION(Exec)
@@ -25,11 +25,25 @@ public:
 
     virtual void OnActorKilled(AActor* Victim, AActor* Killer);
 
+    UFUNCTION(BlueprintCallable, Category = "SaveGame")
+    void WriteSaveGame();
+
+    void LoadSaveGame();
+
+    virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
+    void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+
 protected:
+    FString SlotName = "SaveGame_00";
+
+    UPROPERTY()
+    TObjectPtr<USSaveGame> CurrentSaveGame;
+
     FTimerHandle TimerHandle_SpawnBots;
 
     UPROPERTY(EditDefaultsOnly, Category = "AI")
-    float SpawnTimerInterval;
+    float SpawnTimerInterval = 2.0f;
 
     UPROPERTY(EditDefaultsOnly, Category = "AI")
     UEnvQuery* SpawnBotQuery;

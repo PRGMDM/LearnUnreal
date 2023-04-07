@@ -7,25 +7,28 @@
 
 void USAction::StartAction_Implementation(AActor* InstigatorActor)
 {
-    // UE_LOG(LogTemp, Log, TEXT("Running: %s"), *GetNameSafe(this));
-    LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *ActionName.ToString()), FColor::Green);
+    UE_LOG(LogTemp, Log, TEXT("Running: %s"), *GetNameSafe(this));
+    // LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *ActionName.ToString()), FColor::Green);
     USActionComponent* ActionComp = GetOwningComponent();
     ActionComp->ActiveGameplayTags.AppendTags(GrantsTags);
-    bIsRunning = true;
+
+    RepData.bIsRunning = true;
+    RepData.Instigator = InstigatorActor;
 }
 
 void USAction::StopAction_Implementation(AActor* InstigatorActor)
 {
-    // UE_LOG(LogTemp, Log, TEXT("Stopped: %s"), *GetNameSafe(this));
-    LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::Green);
+    UE_LOG(LogTemp, Log, TEXT("Stopped: %s"), *GetNameSafe(this));
+    // LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::Green);
     USActionComponent* ActionComp = GetOwningComponent();
     ActionComp->ActiveGameplayTags.RemoveTags(GrantsTags);
-    bIsRunning = false;
+    RepData.bIsRunning = false;
+    RepData.Instigator = InstigatorActor;
 }
 
 bool USAction::CanStart_Implementation(AActor* InstigatorActor)
 {
-    if (bIsRunning)
+    if (RepData.bIsRunning)
     {
         return false;
     }
@@ -40,7 +43,7 @@ bool USAction::CanStart_Implementation(AActor* InstigatorActor)
 
 bool USAction::IsRunning() const
 {
-    return bIsRunning;
+    return RepData.bIsRunning;
 }
 
 UWorld* USAction::GetWorld() const
@@ -53,15 +56,15 @@ UWorld* USAction::GetWorld() const
     return nullptr;
 }
 
-void USAction::OnRep_IsRunning()
+void USAction::OnRep_RepData()
 {
-    if (bIsRunning)
+    if (RepData.bIsRunning)
     {
-        StartAction(nullptr);
+        StartAction(RepData.Instigator);
     }
     else
     {
-        StopAction(nullptr);
+        StopAction(RepData.Instigator);
     }
 }
 
@@ -73,5 +76,5 @@ USActionComponent* USAction::GetOwningComponent() const
 void USAction::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-    DOREPLIFETIME(USAction, bIsRunning);
+    DOREPLIFETIME(USAction, RepData);
 }

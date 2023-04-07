@@ -37,7 +37,7 @@ ASCharacter::ASCharacter()
 
 void ASCharacter::HealSelf(float Amount)
 {
-    AttributeComp->ApplyHealthChange(this, AttributeComp->GetHealthMax());
+    AttributeComp->ApplyHealthChange(this, Amount);
 }
 
 void ASCharacter::IncreaseRage(float Amount)
@@ -140,10 +140,11 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
     if (Delta < 0)
     {
         GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
-        if (NewHealth <= 0)
+        if (NewHealth <= 0) // TODO: Maybe use the component health in stead of this newhealth parameter.
         {
             APlayerController* PC = Cast<APlayerController>(GetController());
             DisableInput(PC);
+            SetLifeSpan(5.f);
         }
     }
 }

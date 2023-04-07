@@ -23,5 +23,5 @@ protected:
     TObjectPtr<UStaticMeshComponent> MeshComp;
 
     UPROPERTY(EditDefaultsOnly, Category = "Credits")
-    float GrantCredits = 50;
+    int32 GrantCredits = 50;
 };

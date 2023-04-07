@@ -27,7 +27,7 @@ public:
     ASCharacter();
 
     UFUNCTION(Exec)
-    void HealSelf(float Amount);
+    void HealSelf(float Amount = 100.f);
 
     UFUNCTION(Exec)
     void IncreaseRage(float Amount);

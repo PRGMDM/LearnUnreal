@@ -19,6 +19,12 @@ void USActionComponent::AddAction(TSubclassOf<USAction> ActionClass, AActor* Ins
     {
         return;
     }
+    if (!GetOwner()->HasAuthority())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Client attempting to add an action: [Class: %s]"), *GetNameSafe(ActionClass));
+        return;
+    }
+
     USAction* NewAction = NewObject<USAction>(this, ActionClass);
     if (ensure(NewAction))
     {
@@ -74,6 +80,11 @@ bool USActionComponent::StopActionByName(AActor* InstigatorActor, FName ActionNa
         {
             if (Action->IsRunning())
             {
+                if (!GetOwner()->HasAuthority())
+                {
+                    ServerStopAction(InstigatorActor, ActionName);
+                }
+
                 Action->StopAction(InstigatorActor);
                 return true;
             }
@@ -95,6 +106,11 @@ void USActionComponent::BeginPlay()
     }
 }
 
+void USActionComponent::ServerStopAction_Implementation(AActor* Instigator, FName ActionName)
+{
+    StopActionByName(Instigator, ActionName);
+}
+
 void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
 {
     StartActionByName(Instigator, ActionName);
@@ -109,9 +125,7 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
     for (USAction* Action : Actions)
     {
         FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
-        FString Msg = FString::Printf(TEXT("[%s] Action: %s, IsRunning: %s, Outer: %s"),
-            *GetNameSafe(GetOwner()), *Action->ActionName.ToString(),
-            Action->IsRunning() ? TEXT("true") : TEXT("false"), *GetNameSafe(Action->GetOuter()));
+        FString Msg = FString::Printf(TEXT("[%s] Action: %s"), *GetNameSafe(GetOwner()), *GetNameSafe(Action));
         LogOnScreen(this, Msg, TextColor, 0.f);
     }
 }

@@ -22,11 +22,14 @@ void USAction_Projectile::StartAction_Implementation(AActor* InstigatorActor)
         Character->PlayAnimMontage(AttackAnim);
         UGameplayStatics::SpawnEmitterAttached(AttackVFX, Character->GetMesh(), MuzzleSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
 
-        FTimerHandle TimerHandle_AttackDelay;
-        FTimerDelegate Delegate;
-        Delegate.BindUFunction(this, "Attack_Elapsed", InstigatorActor);
-        // TODO: use animation notify is better, will get to this later.
-        GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay, Delegate, AttackAnimDelay, false);
+        if (Character->HasAuthority())
+        {
+            FTimerHandle TimerHandle_AttackDelay;
+            FTimerDelegate Delegate;
+            Delegate.BindUFunction(this, "Attack_Elapsed", InstigatorActor);
+            // TODO: use animation notify is better, will get to this later.
+            GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay, Delegate, AttackAnimDelay, false);
+        }
     }
 }
 

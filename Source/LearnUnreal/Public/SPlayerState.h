@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerState.h"
 #include "SPlayerState.generated.h"
 
+class USSaveGame;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCreditsChanged);
 
 UCLASS()
@@ -15,13 +17,19 @@ class LEARNUNREAL_API ASPlayerState : public APlayerState
 
 public:
     UFUNCTION(BlueprintCallable, Category = "Credits")
-    bool ModifyCredit(float Amount);
+    bool ModifyCredit(int32 Amount);
 
-    float GetCredits() const;
+    int32 GetCredits() const;
+
+    UFUNCTION(BlueprintNativeEvent)
+    void SavePlayerState(USSaveGame* SaveGame);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void LoadPlayerState(USSaveGame* SaveGame);
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Credits")
-    float Credits;
+    int32 Credits;
 
     UPROPERTY(BlueprintAssignable)
     FOnCreditsChanged OnCreditsChanged;
