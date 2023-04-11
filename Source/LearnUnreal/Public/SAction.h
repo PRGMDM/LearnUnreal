@@ -55,6 +55,12 @@ protected:
     UPROPERTY(ReplicatedUsing = "OnRep_RepData")
     FActionRepData RepData;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+    TObjectPtr<UTexture2D> Icon;
+
+    UPROPERTY(Replicated)
+    float TimeStarted;
+
     UFUNCTION()
     void OnRep_RepData();
 

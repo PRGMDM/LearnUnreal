@@ -9,6 +9,8 @@
 
 class USAction;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionStateChanged, USActionComponent*, OwningComp, USAction*, Action);
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class LEARNUNREAL_API USActionComponent : public UActorComponent
 {
@@ -16,6 +18,12 @@ class LEARNUNREAL_API USActionComponent : public UActorComponent
 
 public:
     USActionComponent();
+
+    UPROPERTY(BlueprintAssignable)
+    FOnActionStateChanged OnActionStarted;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnActionStateChanged OnActionStopped;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
     FGameplayTagContainer ActiveGameplayTags;
@@ -35,7 +43,7 @@ public:
     virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
-    UPROPERTY(Replicated)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     TArray<USAction*> Actions;
 
     UPROPERTY(EditAnywhere, Category = "Actions")

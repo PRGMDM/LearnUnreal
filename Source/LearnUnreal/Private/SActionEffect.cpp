@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SActionEffect.h"
+#include "GameFramework/GameStateBase.h"
 #include "SActionComponent.h"
 
 USActionEffect::USActionEffect()
@@ -43,6 +44,18 @@ void USActionEffect::StopAction_Implementation(AActor* Instigator)
     {
         ActionComp->RemoveAction(this);
     }
+}
+
+float USActionEffect::GetTimeRemaining() const
+{
+    AGameStateBase* GS = GetWorld()->GetGameState<AGameStateBase>();
+    if (GS)
+    {
+
+        float EndTime = TimeStarted + Duration;
+        return EndTime - GS->GetServerWorldTimeSeconds();
+    }
+    return Duration;
 }
 
 void USActionEffect::ApplyEffect_Implementation(AActor* Instigator)

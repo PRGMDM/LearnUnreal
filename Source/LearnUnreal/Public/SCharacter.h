@@ -41,49 +41,49 @@ protected:
     virtual void BeginPlay() override;
 
     UPROPERTY(VisibleAnywhere)
-    USpringArmComponent* SpringArmComp;
+    TObjectPtr<USpringArmComponent> SpringArmComp;
 
     UPROPERTY(VisibleAnywhere)
-    UCameraComponent* CameraComp;
+    TObjectPtr<UCameraComponent> CameraComp;
 
     UPROPERTY(EditAnywhere)
-    USInteractionComponent* InteractionComp;
+    TObjectPtr<USInteractionComponent> InteractionComp;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    USAttributeComponent* AttributeComp;
+    TObjectPtr<USAttributeComponent> AttributeComp;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Components")
-    USActionComponent* ActionComp;
+    TObjectPtr<USActionComponent> ActionComp;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputMappingContext* InputMapping;
+    TObjectPtr<UInputMappingContext> InputMapping;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputAction* MoveAction;
+    TObjectPtr<UInputAction> MoveAction;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputAction* LookAction;
+    TObjectPtr<UInputAction> LookAction;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputAction* JumpAction;
+    TObjectPtr<UInputAction> JumpAction;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputAction* PrimaryAttackAction;
+    TObjectPtr<UInputAction> PrimaryAttackAction;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputAction* SecondaryAttackAction;
+    TObjectPtr<UInputAction> SecondaryAttackAction;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputAction* InteractAction;
+    TObjectPtr<UInputAction> InteractAction;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputAction* DashAction;
+    TObjectPtr<UInputAction> DashAction;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputAction* SprintAction;
+    TObjectPtr<UInputAction> SprintAction;
 
     UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputAction* ParryAction;
+    TObjectPtr<UInputAction> ParryAction;
 
     UPROPERTY(EditDefaultsOnly, Category = "Ability")
     float BlackHoleRageCost = 100.f;
