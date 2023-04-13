@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/Datatable.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "GameFramework/GameModeBase.h"
 #include "SPowerupItemBase.h"
@@ -12,11 +13,24 @@ class UEnvQuery;
 class UEnvQueryInstanceBlueprintWrapper;
 class UCurveFloat;
 class USSaveGame;
+class UDataTable;
+class USEnemyData;
+
+USTRUCT(BlueprintType)
+struct FEnemyInfoRow : public FTableRowBase
+{
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    FPrimaryAssetId EnemyId;
+};
 
 UCLASS()
 class LEARNUNREAL_API ASGameModeBase : public AGameModeBase
 {
     GENERATED_BODY()
+
 public:
     virtual void StartPlay() override;
 
@@ -43,13 +57,13 @@ protected:
     FTimerHandle TimerHandle_SpawnBots;
 
     UPROPERTY(EditDefaultsOnly, Category = "AI")
+    TObjectPtr<UDataTable> EnemyTable;
+
+    UPROPERTY(EditDefaultsOnly, Category = "AI")
     float SpawnTimerInterval = 2.0f;
 
     UPROPERTY(EditDefaultsOnly, Category = "AI")
     UEnvQuery* SpawnBotQuery;
-
-    UPROPERTY(EditDefaultsOnly, Category = "AI")
-    TSubclassOf<AActor> MinionClass;
 
     UPROPERTY(EditDefaultsOnly, Category = "AI")
     UCurveFloat* DifficultyCurve;
@@ -71,6 +85,8 @@ protected:
 
     UFUNCTION()
     void OnSpawnItemsQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+    void OnEnemyLoaded(FPrimaryAssetId Id, FVector SpawnLocation);
 
     UFUNCTION()
     void RespawnPlayerElapsed(AController* Controller);

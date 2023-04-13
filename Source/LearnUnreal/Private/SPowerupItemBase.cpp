@@ -21,6 +21,11 @@ void ASPowerupItemBase::Interact_Implementation(APawn* InstigatorPawn)
 {
 }
 
+FText ASPowerupItemBase::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+    return FText::GetEmpty();
+}
+
 void ASPowerupItemBase::ShowItem()
 {
     SetItemState(true);

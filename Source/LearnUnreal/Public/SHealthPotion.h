@@ -17,6 +17,8 @@ class LEARNUNREAL_API ASHealthPotion : public ASPowerupItemBase
 
     void Interact_Implementation(APawn* InstigatorPawn) override;
 
+    FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
+
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Component")
     UStaticMeshComponent* MeshComp;

@@ -3,13 +3,16 @@
 #include "SGameModeBase.h"
 #include "AI/SAICharacter.h"
 #include "DrawDebugHelpers.h"
+#include "Engine/AssetManager.h"
 #include "EngineUtils.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
+#include "SActionComponent.h"
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
+#include "SEnemyData.h"
 #include "SGameplayInterface.h"
 #include "SPlayerState.h"
 #include "SSaveGame.h"
@@ -111,8 +114,21 @@ void ASGameModeBase::OnSpawnBotsQueryComplete(UEnvQueryInstanceBlueprintWrapper*
         TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
         if (Locations.Num() > 0)
         {
-            DrawDebugSphere(GetWorld(), Locations[0], 100, 10, FColor::Black, true, 10, 0, 5);
-            GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
+            // DrawDebugSphere(GetWorld(), Locations[0], 100, 10, FColor::Black, true, 10, 0, 5);
+
+            TArray<FEnemyInfoRow*> Rows;
+            EnemyTable->GetAllRows("", Rows);
+            FEnemyInfoRow* Selected = Rows[FMath::RandRange(0, Rows.Num() - 1)];
+
+            TObjectPtr<UAssetManager> Manager = UAssetManager::GetIfValid();
+            if (Manager)
+            {
+                TArray<FName> Bundles;
+
+                FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &ASGameModeBase::OnEnemyLoaded, Selected->EnemyId, Locations[0]);
+
+                Manager->LoadPrimaryAsset(Selected->EnemyId, Bundles, Delegate);
+            }
         }
     }
     else
@@ -136,6 +152,31 @@ void ASGameModeBase::OnSpawnItemsQueryComplete(UEnvQueryInstanceBlueprintWrapper
     {
         UE_LOG(LogTemp, Warning, TEXT("Failed to spawn items."));
         return;
+    }
+}
+
+void ASGameModeBase::OnEnemyLoaded(FPrimaryAssetId Id, FVector SpawnLocation)
+{
+
+    TObjectPtr<UAssetManager> Manager = UAssetManager::GetIfValid();
+    if (Manager)
+    {
+        TObjectPtr<USEnemyData> Data = Cast<USEnemyData>(Manager->GetPrimaryAssetObject(Id));
+        if (Data)
+        {
+            TObjectPtr<AActor> NewBot = GetWorld()->SpawnActor<AActor>(Data->EnemyClass, SpawnLocation, FRotator::ZeroRotator);
+            if (NewBot)
+            {
+                TObjectPtr<USActionComponent> ActionComp = Cast<USActionComponent>(NewBot->GetComponentByClass(USActionComponent::StaticClass()));
+                if (ActionComp)
+                {
+                    for (auto ActionClass : Data->Actions)
+                    {
+                        ActionComp->AddAction(ActionClass, NewBot);
+                    }
+                }
+            }
+        }
     }
 }
 
