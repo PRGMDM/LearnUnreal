@@ -26,7 +26,10 @@ protected:
     USphereComponent* SphereComp;
 
     UPROPERTY(EditAnywhere, Category = "Powerup")
-    float Cooldown;
+    float Cooldown = 10.f;
+
+    UPROPERTY(ReplicatedUsing = "OnRep_bIsAvailable")
+    bool bIsAvailable = true;
 
     FTimerHandle TimerHandle_CooldownTimer;
 
@@ -35,5 +38,6 @@ protected:
 
     void HideItemAndCooldown();
 
-    void SetItemState(bool bIsAvailable);
+    UFUNCTION()
+    void OnRep_bIsAvailable();
 };

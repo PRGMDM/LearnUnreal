@@ -140,7 +140,7 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
     if (Delta < 0)
     {
         GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
-        if (NewHealth <= 0) // TODO: Maybe use the component health in stead of this newhealth parameter.
+        if (NewHealth <= 0)
         {
             APlayerController* PC = Cast<APlayerController>(GetController());
             DisableInput(PC);

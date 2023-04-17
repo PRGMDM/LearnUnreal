@@ -6,6 +6,8 @@
 #include "Net/UnrealNetwork.h"
 #include "SAction.h"
 
+DECLARE_CYCLE_STAT(TEXT("StartActionByName"), STAT_StartActionByName, STATGROUP_CUSTOM);
+
 USActionComponent::USActionComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
@@ -49,6 +51,8 @@ void USActionComponent::RemoveAction(USAction* Action)
 
 bool USActionComponent::StartActionByName(AActor* InstigatorActor, FName ActionName)
 {
+    // SCOPE_CYCLE_COUNTER(STAT_StartActionByName);
+
     for (USAction* Action : Actions)
     {
         if (Action && Action->ActionName == ActionName)
@@ -64,6 +68,8 @@ bool USActionComponent::StartActionByName(AActor* InstigatorActor, FName ActionN
             {
                 ServerStartAction(InstigatorActor, ActionName);
             }
+
+            // TRACE_BOOKMARK(TEXT("StartAction::%s"), *GetNameSafe(Action));
 
             Action->StartAction(InstigatorActor);
             return true;
@@ -104,6 +110,20 @@ void USActionComponent::BeginPlay()
             AddAction(Action, GetOwner());
         }
     }
+}
+
+void USActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    TArray<TObjectPtr<USAction>> ActionsCopy = Actions;
+    for (auto Action : ActionsCopy)
+    {
+        if (Action && Action->IsRunning())
+        {
+            Action->StopAction(GetOwner());
+        }
+    }
+
+    Super::EndPlay(EndPlayReason);
 }
 
 void USActionComponent::ServerStopAction_Implementation(AActor* Instigator, FName ActionName)

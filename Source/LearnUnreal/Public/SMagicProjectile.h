@@ -9,12 +9,14 @@
 #include "SMagicProjectile.generated.h"
 
 class USActionEffect;
-// TODO: Maybe add a lifespan, destroy self if go too far/after some time.
 
 UCLASS()
 class LEARNUNREAL_API ASMagicProjectile : public ASProjectileBase
 {
     GENERATED_BODY()
+
+public:
+    ASMagicProjectile();
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Effect")

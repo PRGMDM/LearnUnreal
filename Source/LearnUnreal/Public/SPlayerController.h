@@ -8,19 +8,27 @@
 #include "GameFramework/PlayerController.h"
 #include "SPlayerController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerStateReplication);
+
 class UInputAction;
-class UInputMappingContext;
 
 UCLASS()
 class LEARNUNREAL_API ASPlayerController : public APlayerController
 {
     GENERATED_BODY()
 
+    void OnRep_PlayerState() override;
+
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "UI")
     TSubclassOf<UUserWidget> PauseMenuClass;
 
     TObjectPtr<UUserWidget> PauseMenuInstance;
+
+    bool bPlayerStateReady = false;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnPlayerStateReplication OnPlayerStateReplication;
 
     UPROPERTY(EditDefaultsOnly)
     TObjectPtr<UInputAction> PauseAction;

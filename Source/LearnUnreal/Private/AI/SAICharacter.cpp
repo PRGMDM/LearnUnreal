@@ -23,7 +23,6 @@ ASAICharacter::ASAICharacter()
 
     AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-    GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
     GetMesh()->SetGenerateOverlapEvents(true);
 
     TimeToHitParamName = "TimeToHit";
@@ -46,11 +45,9 @@ void ASAICharacter::SetTargetActor(AActor* Target)
         TObjectPtr<AActor> CurTarget = Cast<AActor>(BBComp->GetValueAsObject("TargetActor"));
         if (CurTarget != Target)
         {
-            TObjectPtr<USWorldUserWidget> EnemySpottedWidget = CreateWidget<USWorldUserWidget>(GetWorld(), EnemySpottedWidgetClass);
-            EnemySpottedWidget->AttachedActor = this;
-            EnemySpottedWidget->AddToViewport(10);
+            MulticastPawnSeen();
         }
-        BBComp->SetValueAsObject("TargetActor", Target); // TODO: Make this like AttackRangeKey in SBTService_CheckAttackRange. Can I?
+        BBComp->SetValueAsObject("TargetActor", Target);
     }
 }
 
@@ -65,7 +62,6 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
     {
         if (InstigatorActor != this)
         {
-            UE_LOG(LogTemp, Log, TEXT("Target set"));
             SetTargetActor(InstigatorActor);
         }
 
@@ -74,7 +70,7 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
             ActiveHealthBar = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
         }
 
-        if (ActiveHealthBar)
+        if (ActiveHealthBar && !ActiveHealthBar->IsInViewport())
         {
             ActiveHealthBar->AttachedActor = this;
             ActiveHealthBar->AddToViewport();
@@ -89,11 +85,18 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
             {
                 AIC->GetBrainComponent()->StopLogic("Killed");
             }
-            GetMesh()->SetAllBodiesSimulatePhysics(true); // ragdoll
+            GetMesh()->SetAllBodiesSimulatePhysics(true);
             GetMesh()->SetCollisionProfileName("Ragdoll");
             GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
             GetCharacterMovement()->DisableMovement();
             SetLifeSpan(10.f);
         }
     }
+}
+
+void ASAICharacter::MulticastPawnSeen_Implementation()
+{
+    TObjectPtr<USWorldUserWidget> EnemySpottedWidget = CreateWidget<USWorldUserWidget>(GetWorld(), EnemySpottedWidgetClass);
+    EnemySpottedWidget->AttachedActor = this;
+    EnemySpottedWidget->AddToViewport(10);
 }

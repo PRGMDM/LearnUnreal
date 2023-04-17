@@ -2,6 +2,7 @@
 
 #include "SPowerupItemBase.h"
 #include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASPowerupItemBase::ASPowerupItemBase()
@@ -13,8 +14,6 @@ ASPowerupItemBase::ASPowerupItemBase()
     SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
     bReplicates = true;
-
-    Cooldown = 10.f;
 }
 
 void ASPowerupItemBase::Interact_Implementation(APawn* InstigatorPawn)
@@ -28,17 +27,26 @@ FText ASPowerupItemBase::GetInteractText_Implementation(APawn* InstigatorPawn)
 
 void ASPowerupItemBase::ShowItem()
 {
-    SetItemState(true);
+    bIsAvailable = true;
+    OnRep_bIsAvailable();
 }
 
 void ASPowerupItemBase::HideItemAndCooldown()
 {
-    SetItemState(false);
+    bIsAvailable = false;
+    OnRep_bIsAvailable();
     GetWorldTimerManager().SetTimer(TimerHandle_CooldownTimer, this, &ASPowerupItemBase::ShowItem, Cooldown);
 }
 
-void ASPowerupItemBase::SetItemState(bool bIsAvailable)
+void ASPowerupItemBase::OnRep_bIsAvailable()
 {
+    UE_LOG(LogTemp, Log, TEXT("is avail rep'd: %s"), bIsAvailable ? TEXT("true") : TEXT("false"))
     SetActorEnableCollision(bIsAvailable);
     RootComponent->SetVisibility(bIsAvailable, true);
+}
+
+void ASPowerupItemBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(ASPowerupItemBase, bIsAvailable);
 }

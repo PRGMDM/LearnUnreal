@@ -5,6 +5,15 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+void ASPlayerController::OnRep_PlayerState()
+{
+    Super::OnRep_PlayerState();
+    if (!bPlayerStateReady)
+    {
+        OnPlayerStateReplication.Broadcast();
+    }
+}
+
 void ASPlayerController::TogglePauseMenu()
 {
     ensure(PauseMenuClass);

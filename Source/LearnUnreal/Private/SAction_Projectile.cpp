@@ -27,7 +27,7 @@ void USAction_Projectile::StartAction_Implementation(AActor* InstigatorActor)
             FTimerHandle TimerHandle_AttackDelay;
             FTimerDelegate Delegate;
             Delegate.BindUFunction(this, "Attack_Elapsed", InstigatorActor);
-            // TODO: use animation notify is better, will get to this later.
+            // TODO: try animation notify
             GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay, Delegate, AttackAnimDelay, false);
         }
     }
@@ -47,11 +47,11 @@ void USAction_Projectile::Attack_Elapsed(ASCharacter* InstigatorActor)
         Params.AddIgnoredActor(InstigatorActor);
 
         FCollisionObjectQueryParams ObjParams;
-        ObjParams.AddObjectTypesToQuery(ECC_WorldStatic); // TODO: When look above, the camera could be in the hitbox of landscape, what to do? make the trace start further away.
+        ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
         ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
         ObjParams.AddObjectTypesToQuery(ECC_Pawn);
 
-        FVector Start = InstigatorActor->GetPawnViewLocation();
+        FVector Start = InstigatorActor->GetPawnViewLocation() + InstigatorActor->GetControlRotation().Vector() * 50; // Make the trace start further away to avoid hitting landscape.
         FVector End = Start + InstigatorActor->GetControlRotation().Vector() * 10000;
 
         FHitResult Hit;

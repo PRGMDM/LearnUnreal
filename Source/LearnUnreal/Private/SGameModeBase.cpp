@@ -24,12 +24,6 @@ void ASGameModeBase::StartPlay()
 {
     Super::StartPlay();
     GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ASGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true);
-    // TODO: A better query in editor, RandomXPct returns one result. How to find random locations within a fixed area (specified by location?)
-    UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnItemsQuery, this, EEnvQueryRunMode::RandomBest25Pct, nullptr);
-    if (QueryInstance)
-    {
-        QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnSpawnItemsQueryComplete);
-    }
 }
 
 void ASGameModeBase::KillAll()
@@ -138,23 +132,6 @@ void ASGameModeBase::OnSpawnBotsQueryComplete(UEnvQueryInstanceBlueprintWrapper*
     }
 }
 
-void ASGameModeBase::OnSpawnItemsQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
-{
-    if (QueryStatus == EEnvQueryStatus::Success)
-    {
-        TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
-        for (FVector Location : Locations)
-        {
-            GetWorld()->SpawnActor<AActor>(ItemClasses[FMath::RandRange(0, Locations.Num() - 1)], Location, FRotator::ZeroRotator);
-        }
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Failed to spawn items."));
-        return;
-    }
-}
-
 void ASGameModeBase::OnEnemyLoaded(FPrimaryAssetId Id, FVector SpawnLocation)
 {
 
@@ -196,7 +173,7 @@ void ASGameModeBase::WriteSaveGame()
     {
         ASPlayerState* PS = Cast<ASPlayerState>(State);
         PS->SavePlayerState(CurrentSaveGame);
-        break; // TODO: single player for now.
+        break;
     }
 
     CurrentSaveGame->SavedActors.Empty();
@@ -268,16 +245,23 @@ void ASGameModeBase::LoadSaveGame()
 void ASGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
     Super::InitGame(MapName, Options, ErrorMessage);
+
+    FString SelectedSlot = UGameplayStatics::ParseOption(Options, "SaveGame");
+    if (!SelectedSlot.IsEmpty())
+    {
+        SlotName = SelectedSlot;
+    }
+
     LoadSaveGame();
 }
 
 void ASGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
-    Super::HandleStartingNewPlayer_Implementation(NewPlayer);
-
     TObjectPtr<ASPlayerState> State = NewPlayer->GetPlayerState<ASPlayerState>();
     if (State)
     {
         State->LoadPlayerState(CurrentSaveGame);
     }
+
+    Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 }

@@ -28,9 +28,12 @@ public:
     void LoadPlayerState(USSaveGame* SaveGame);
 
 protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Credits")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, ReplicatedUsing = "OnRep_Credits", Category = "Credits")
     int32 Credits;
 
     UPROPERTY(BlueprintAssignable)
     FOnCreditsChanged OnCreditsChanged;
+
+    UFUNCTION()
+    void OnRep_Credits();
 };

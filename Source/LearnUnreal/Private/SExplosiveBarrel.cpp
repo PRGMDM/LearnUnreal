@@ -25,7 +25,6 @@ ASExplosiveBarrel::ASExplosiveBarrel()
     ForceComp->bImpulseVelChange = true;
 
     bReplicates = true;
-    // TODO: might need to come back later and adjust the collision channel
 }
 
 // Called when the game starts or when spawned

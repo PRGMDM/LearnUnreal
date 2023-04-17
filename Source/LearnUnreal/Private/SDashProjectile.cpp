@@ -38,7 +38,6 @@ void ASDashProjectile::TeleportInstigator()
     AActor* MyInstigator = GetInstigator();
     if (ensure(MyInstigator))
     {
-        bool result = MyInstigator->TeleportTo(GetActorLocation(), MyInstigator->GetActorRotation(), false, true);
-        UE_LOG(LogTemp, Warning, TEXT("Teleporting to %f %f %f, %s"), GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z, result ? TEXT("True") : TEXT("False"));
+        MyInstigator->TeleportTo(GetActorLocation(), MyInstigator->GetActorRotation(), false, true);
     }
 }

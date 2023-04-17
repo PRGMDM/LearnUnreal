@@ -68,23 +68,14 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "AI")
     UCurveFloat* DifficultyCurve;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Items")
-    UEnvQuery* SpawnItemsQuery;
-
     UPROPERTY(EditDefaultsOnly, Category = "Credits")
     float RewardForKill;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Items")
-    TArray<TSubclassOf<ASPowerupItemBase>> ItemClasses;
 
     UFUNCTION()
     void SpawnBotTimerElapsed();
 
     UFUNCTION()
     void OnSpawnBotsQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
-
-    UFUNCTION()
-    void OnSpawnItemsQueryComplete(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
     void OnEnemyLoaded(FPrimaryAssetId Id, FVector SpawnLocation);
 
