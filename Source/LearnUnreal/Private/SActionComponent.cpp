@@ -142,12 +142,12 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
     /*  FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
       GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::White, DebugMsg);*/
 
-    for (USAction* Action : Actions)
+    /*for (USAction* Action : Actions)
     {
         FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
         FString Msg = FString::Printf(TEXT("[%s] Action: %s"), *GetNameSafe(GetOwner()), *GetNameSafe(Action));
         LogOnScreen(this, Msg, TextColor, 0.f);
-    }
+    }*/
 }
 
 void USActionComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const

@@ -23,7 +23,7 @@ void ASMagicProjectile::PostInitializeComponents()
 
 void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    UE_LOG(LogTemp, Log, TEXT("Projectile overlaps with %s"), *(OtherComp->GetReadableName()));
+    UE_LOG(LogTemp, Log, TEXT("Projectile overlaps with %s"), *GetNameSafe(OtherActor));
     if (OtherActor && OtherActor != GetInstigator())
     {
         // To access GameTags in c++:

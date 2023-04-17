@@ -135,8 +135,8 @@ void ASCharacter::PrimaryInteract()
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
-    FString DebugMsg = (HasAuthority() ? "Server:" : "Client") + (FString("Actual Health: ") + FString::SanitizeFloat(AttributeComp->GetHealth()));
-    GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, DebugMsg);
+    /* FString DebugMsg = (HasAuthority() ? "Server:" : "Client") + (FString("Actual Health: ") + FString::SanitizeFloat(AttributeComp->GetHealth()));
+     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, DebugMsg);*/
     if (Delta < 0)
     {
         GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
